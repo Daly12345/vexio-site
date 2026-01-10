@@ -124,17 +124,29 @@ export default function ContactWizard() {
 
     // Si solo necesita info básica, quedarse con el plan base
     if (features.includes("none") || features.length === 0) {
-      // Ajustar por presupuesto si es necesario (no recomendar algo más caro que el presupuesto)
       return adjustByBudget(basePlan, budget, planOrder);
+    }
+
+    // Caso especial: Landing + solo menú digital = Básico (un menú puede ser 1 página)
+    if (pages === "landing" && features.length === 1 && features.includes("menu")) {
+      return adjustByBudget("basico", budget, planOrder);
+    }
+
+    // Caso especial: Landing o pequeño + solo una feature simple = Básico
+    if ((pages === "landing" || pages === "small") && features.length === 1) {
+      if (features.includes("menu") || features.includes("blog")) {
+        return adjustByBudget("basico", budget, planOrder);
+      }
     }
 
     // Calcular "puntos" de features para subir de plan
     let featurePoints = 0;
 
-    if (features.includes("menu")) featurePoints += 1;        // Menú digital
+    // Solo sumar puntos si hay múltiples features o features complejas
+    if (features.includes("menu") && features.length > 1) featurePoints += 1;  // Menú + otras cosas
     if (features.includes("booking")) featurePoints += 2;     // Reservaciones (más complejo)
     if (features.includes("multilang")) featurePoints += 2;   // Bilingüe (más trabajo)
-    if (features.includes("blog")) featurePoints += 1;        // Blog
+    if (features.includes("blog") && features.length > 1) featurePoints += 1;  // Blog + otras cosas
 
     // Subir de plan según puntos de features
     let recommendedIndex = planOrder.indexOf(basePlan);
@@ -143,8 +155,6 @@ export default function ContactWizard() {
       recommendedIndex = Math.min(recommendedIndex + 2, 3); // Subir hasta Premium máximo
     } else if (featurePoints >= 2) {
       recommendedIndex = Math.min(recommendedIndex + 1, 3); // Subir 1 nivel
-    } else if (featurePoints === 1 && basePlan === "micro") {
-      recommendedIndex = 1; // Micro con 1 feature extra → Básico
     }
 
     let recommended = planOrder[recommendedIndex];
