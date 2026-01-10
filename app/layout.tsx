@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import dynamic from "next/dynamic";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
-
-// Dynamic imports for non-critical components to improve LCP
-const SmoothScroll = dynamic(() => import("@/components/SmoothScroll"), { ssr: false });
-const CustomCursor = dynamic(() => import("@/components/CustomCursor"), { ssr: false });
-const ScrollProgress = dynamic(() => import("@/components/ScrollProgress"), { ssr: false });
-const BackToTop = dynamic(() => import("@/components/BackToTop"), { ssr: false });
+import ClientLayout from "@/components/ClientLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,12 +43,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <SmoothScroll>
-            <ScrollProgress />
-            <CustomCursor />
+          <ClientLayout>
             {children}
-            <BackToTop />
-          </SmoothScroll>
+          </ClientLayout>
         </ThemeProvider>
       </body>
     </html>

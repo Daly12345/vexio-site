@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import ScrollReveal from "./animations/ScrollReveal";
 import StaggerContainer, { StaggerItem } from "./animations/StaggerContainer";
 
@@ -77,7 +77,7 @@ export default function FAQ() {
                 dudas
               </span>
             </h2>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
               Las preguntas más comunes sobre nuestros servicios
             </p>
           </div>
@@ -127,7 +127,7 @@ export default function FAQ() {
                 {openIndex === index && (
                   <div className="px-4 pb-4">
                     <div className="pt-2 border-t border-gray-800">
-                      <p className="text-gray-400 text-sm leading-relaxed pt-3">
+                      <p className="text-gray-300 text-sm leading-relaxed pt-3">
                         {faq.answer}
                       </p>
                     </div>
@@ -179,24 +179,23 @@ export default function FAQ() {
                     </motion.div>
                   </button>
 
-                  <AnimatePresence>
-                    {openIndex === index && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                      >
-                        <div className="px-6 pb-6">
-                          <div className="pt-2 border-t border-gray-800">
-                            <p className="text-gray-400 leading-relaxed pt-4">
-                              {faq.answer}
-                            </p>
-                          </div>
+                  {/* CSS Grid animation for composited height transition */}
+                  <div
+                    className="grid transition-[grid-template-rows] duration-300 ease-in-out"
+                    style={{
+                      gridTemplateRows: openIndex === index ? "1fr" : "0fr",
+                    }}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="px-6 pb-6">
+                        <div className="pt-2 border-t border-gray-800">
+                          <p className="text-gray-300 leading-relaxed pt-4">
+                            {faq.answer}
+                          </p>
                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </StaggerItem>
             ))}

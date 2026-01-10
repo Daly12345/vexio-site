@@ -114,7 +114,7 @@ function ProcessStep({ step, index }: { step: (typeof steps)[0]; index: number }
           </span>
         </motion.div>
         <h3 className="text-2xl font-bold text-white mb-3">{step.title}</h3>
-        <p className="text-gray-400 leading-relaxed max-w-md inline-block">
+        <p className="text-gray-300 leading-relaxed max-w-md inline-block">
           {step.description}
         </p>
       </div>
@@ -159,7 +159,7 @@ export default function Process() {
                 trabajamos
               </span>
             </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               Un proceso simple y transparente para que tu proyecto sea un éxito
             </p>
           </div>

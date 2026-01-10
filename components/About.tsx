@@ -61,19 +61,14 @@ function SkillBar({ skill, index, isMobile }: { skill: (typeof skills)[0]; index
         <span className="text-cyan-400">{skill.level}%</span>
       </div>
       <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-        {isMobile ? (
-          <div
-            className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
-            style={{ width: `${skill.level}%` }}
-          />
-        ) : (
-          <motion.div
-            className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
-            initial={{ width: 0 }}
-            animate={isInView ? { width: `${skill.level}%` } : {}}
-            transition={{ duration: 1, delay: index * 0.1, ease: "easeOut" }}
-          />
-        )}
+        {/* Use scaleX transform instead of width for composited animation */}
+        <motion.div
+          className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full origin-left"
+          style={{ width: `${skill.level}%` }}
+          initial={isMobile ? { opacity: 1 } : { scaleX: 0, opacity: 0 }}
+          animate={isInView ? { scaleX: 1, opacity: 1 } : {}}
+          transition={isMobile ? { duration: 0 } : { duration: 1, delay: index * 0.1, ease: "easeOut" }}
+        />
       </div>
     </div>
   );
@@ -109,12 +104,12 @@ export default function About() {
                   digitales únicas
                 </span>
               </h2>
-              <p className="text-xl text-gray-400 mb-8 leading-relaxed">
+              <p className="text-xl text-gray-300 mb-8 leading-relaxed">
                 Somos un equipo apasionado por el desarrollo web y el diseño digital.
                 Nos especializamos en crear sitios web que no solo se ven increíbles,
                 sino que también generan resultados reales para tu negocio.
               </p>
-              <p className="text-gray-400 mb-8 leading-relaxed">
+              <p className="text-gray-300 mb-8 leading-relaxed">
                 Desde landing pages simples hasta tiendas en línea completas,
                 utilizamos las últimas tecnologías para asegurar que tu sitio sea
                 rápido, seguro y optimizado para convertir visitantes en clientes.
