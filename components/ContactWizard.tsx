@@ -101,52 +101,83 @@ export default function ContactWizard() {
   const calculateRecommendation = (): keyof typeof plans => {
     const { pages, features, budget } = answers;
 
+    // Orden de planes de menor a mayor
+    const planOrder: (keyof typeof plans)[] = ["micro", "basico", "profesional", "premium", "ecommerce"];
+
     // Si necesita e-commerce, directamente ese plan
     if (features.includes("ecommerce")) {
       return "ecommerce";
     }
 
-    // Si necesita reservaciones con calendario o versión en inglés → Premium
-    if (features.includes("booking") && features.includes("multilang")) {
-      return "premium";
-    }
+    // Calcular plan base según número de páginas
+    let basePlan: keyof typeof plans = "micro";
 
-    // Si necesita muchas páginas o blog + reservaciones → Premium
-    if (pages === "large" || (features.includes("blog") && features.includes("booking"))) {
-      return "premium";
-    }
-
-    // Si necesita reservaciones o menú digital → Profesional
-    if (features.includes("booking") || features.includes("menu")) {
-      return "profesional";
-    }
-
-    // Si necesita versión en inglés o blog solo → Profesional
-    if (features.includes("multilang") || features.includes("blog")) {
-      return "profesional";
-    }
-
-    // Basado en número de páginas
-    if (pages === "medium") {
-      return "profesional";
-    }
-
-    if (pages === "small") {
-      return "basico";
-    }
-
-    // Landing page
     if (pages === "landing") {
-      return "micro";
+      basePlan = "micro";
+    } else if (pages === "small") {
+      basePlan = "basico";
+    } else if (pages === "medium") {
+      basePlan = "profesional";
+    } else if (pages === "large") {
+      basePlan = "premium";
     }
 
-    // Por defecto basado en presupuesto
-    if (budget === "low") return "micro";
-    if (budget === "medium") return "basico";
-    if (budget === "high") return "profesional";
-    if (budget === "premium") return "premium";
+    // Si solo necesita info básica, quedarse con el plan base
+    if (features.includes("none") || features.length === 0) {
+      // Ajustar por presupuesto si es necesario (no recomendar algo más caro que el presupuesto)
+      return adjustByBudget(basePlan, budget, planOrder);
+    }
 
-    return "basico";
+    // Calcular "puntos" de features para subir de plan
+    let featurePoints = 0;
+
+    if (features.includes("menu")) featurePoints += 1;        // Menú digital
+    if (features.includes("booking")) featurePoints += 2;     // Reservaciones (más complejo)
+    if (features.includes("multilang")) featurePoints += 2;   // Bilingüe (más trabajo)
+    if (features.includes("blog")) featurePoints += 1;        // Blog
+
+    // Subir de plan según puntos de features
+    let recommendedIndex = planOrder.indexOf(basePlan);
+
+    if (featurePoints >= 4) {
+      recommendedIndex = Math.min(recommendedIndex + 2, 3); // Subir hasta Premium máximo
+    } else if (featurePoints >= 2) {
+      recommendedIndex = Math.min(recommendedIndex + 1, 3); // Subir 1 nivel
+    } else if (featurePoints === 1 && basePlan === "micro") {
+      recommendedIndex = 1; // Micro con 1 feature extra → Básico
+    }
+
+    let recommended = planOrder[recommendedIndex];
+
+    // Ajustar por presupuesto
+    return adjustByBudget(recommended, budget, planOrder);
+  };
+
+  // Función para ajustar recomendación según presupuesto
+  const adjustByBudget = (
+    plan: keyof typeof plans,
+    budget: string,
+    planOrder: (keyof typeof plans)[]
+  ): keyof typeof plans => {
+    // Mapear presupuesto a plan máximo permitido
+    const budgetMaxPlan: Record<string, keyof typeof plans> = {
+      "low": "micro",           // Menos de $5,000 → máximo Micro
+      "medium": "profesional",  // $5,000 - $15,000 → hasta Profesional
+      "high": "premium",        // $15,000 - $30,000 → hasta Premium
+      "premium": "ecommerce",   // Más de $30,000 → cualquier plan
+      "flexible": "ecommerce"   // Flexible → cualquier plan
+    };
+
+    const maxPlan = budgetMaxPlan[budget] || "ecommerce";
+    const planIndex = planOrder.indexOf(plan);
+    const maxIndex = planOrder.indexOf(maxPlan);
+
+    // Si el plan recomendado excede el presupuesto, bajar al máximo permitido
+    if (planIndex > maxIndex) {
+      return planOrder[maxIndex];
+    }
+
+    return plan;
   };
 
   const handleNext = () => {
