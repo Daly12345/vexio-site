@@ -12,6 +12,7 @@ export default function Pricing() {
       name: "Micro",
       price: "$3,500",
       priceRange: "$3,500 - $4,500",
+      maintenance: "$800 - $1,200/mes",
       popular: false,
       forWho: "Taquerías, fondas, talleres pequeños",
       features: [
@@ -29,6 +30,7 @@ export default function Pricing() {
       name: "Básico",
       price: "$5,500",
       priceRange: "$5,500 - $8,000",
+      maintenance: "$1,500/mes",
       popular: false,
       forWho: "Estéticas, veterinarias, tiendas pequeñas",
       features: [
@@ -46,6 +48,7 @@ export default function Pricing() {
       name: "Profesional",
       price: "$9,000",
       priceRange: "$9,000 - $15,000",
+      maintenance: "$2,000/mes",
       popular: true,
       forWho: "Restaurantes, consultorios, tours",
       features: [
@@ -64,6 +67,7 @@ export default function Pricing() {
       name: "Premium",
       price: "$16,000",
       priceRange: "$16,000 - $25,000",
+      maintenance: "$3,000/mes",
       popular: false,
       forWho: "Hoteles, restaurantes premium, clínicas",
       features: [
@@ -83,6 +87,7 @@ export default function Pricing() {
       name: "E-commerce",
       price: "$25,000",
       priceRange: "$25,000 - $40,000",
+      maintenance: "$4,000/mes",
       popular: false,
       forWho: "Boutiques, tiendas que quieren vender online",
       features: [
@@ -171,7 +176,7 @@ export default function Pricing() {
                     </div>
 
                     {/* Pricing */}
-                    <div className="mb-8 overflow-hidden">
+                    <div className="mb-6 overflow-hidden">
                       <div className="flex items-baseline gap-1 flex-wrap">
                         <span className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 whitespace-nowrap">
                           {plan.price}
@@ -179,6 +184,14 @@ export default function Pricing() {
                         <span className="text-gray-400 text-sm">MXN</span>
                       </div>
                       <p className="text-xs text-gray-500 mt-1">{plan.priceRange}</p>
+                    </div>
+
+                    {/* Maintenance */}
+                    <div className="mb-8 py-3 px-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-400">Mantenimiento:</span>
+                        <span className="text-sm font-semibold text-cyan-400">{plan.maintenance}</span>
+                      </div>
                     </div>
 
                     {/* Features */}
