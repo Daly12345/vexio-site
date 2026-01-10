@@ -353,16 +353,13 @@ export default function Hero() {
             {/* Mobile mockup - Simplified version for smaller screens */}
             <motion.div
               className="mt-10 lg:hidden"
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
             >
               <div className="relative mx-auto max-w-xs">
-                {/* Phone mockup for mobile */}
-                <motion.div
-                  animate={{ y: [-5, 5, -5] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                >
+                {/* Phone mockup for mobile - sin animación de flotación */}
+                <div>
                   <div className="bg-gray-900 rounded-[2rem] p-2 shadow-2xl border border-gray-700 mx-auto w-[200px]">
                     {/* Phone notch */}
                     <div className="absolute top-4 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-full z-10" />
@@ -378,18 +375,8 @@ export default function Hero() {
                         <div className="w-3/4 h-2 bg-gray-600 rounded" />
                       </div>
 
-                      {/* Image placeholder */}
-                      <motion.div
-                        className="w-full aspect-video bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-lg border border-cyan-500/30 mb-4"
-                        animate={{
-                          boxShadow: [
-                            "0 0 10px rgba(6, 182, 212, 0.2)",
-                            "0 0 20px rgba(6, 182, 212, 0.4)",
-                            "0 0 10px rgba(6, 182, 212, 0.2)"
-                          ]
-                        }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      />
+                      {/* Image placeholder - sin animación de glow */}
+                      <div className="w-full aspect-video bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-lg border border-cyan-500/30 mb-4" />
 
                       {/* More content */}
                       <div className="space-y-2">
@@ -397,41 +384,25 @@ export default function Hero() {
                         <div className="w-2/3 h-1.5 bg-gray-700 rounded" />
                       </div>
 
-                      {/* CTA button */}
-                      <motion.div
-                        className="w-20 h-6 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full mt-4 mx-auto"
-                        animate={{ scale: [1, 1.05, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      />
+                      {/* CTA button - sin animación de scale */}
+                      <div className="w-20 h-6 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full mt-4 mx-auto" />
                     </div>
                   </div>
 
                   {/* Glow effect */}
                   <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-cyan-500/30 blur-xl rounded-full" />
-                </motion.div>
+                </div>
 
-                {/* Floating icons around phone - simplified */}
-                <motion.div
-                  className="absolute -left-4 top-1/4 w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center text-sm shadow-lg"
-                  animate={{ y: [-5, 5, -5], rotate: [0, 10, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                >
+                {/* Floating icons - estáticos en móvil */}
+                <div className="absolute -left-4 top-1/4 w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center text-sm shadow-lg">
                   ⚡
-                </motion.div>
-                <motion.div
-                  className="absolute -right-4 top-1/3 w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center text-sm shadow-lg"
-                  animate={{ y: [5, -5, 5], rotate: [0, -10, 0] }}
-                  transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                >
+                </div>
+                <div className="absolute -right-4 top-1/3 w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center text-sm shadow-lg">
                   🚀
-                </motion.div>
-                <motion.div
-                  className="absolute -right-2 bottom-1/4 w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-xl flex items-center justify-center text-sm shadow-lg"
-                  animate={{ y: [-3, 3, -3], rotate: [0, 5, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                >
+                </div>
+                <div className="absolute -right-2 bottom-1/4 w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-xl flex items-center justify-center text-sm shadow-lg">
                   🎨
-                </motion.div>
+                </div>
               </div>
             </motion.div>
           </motion.div>

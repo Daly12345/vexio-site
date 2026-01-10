@@ -140,36 +140,28 @@ export default function About() {
                 {values.map((value, index) => (
                   <motion.div
                     key={value.title}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: isMobile ? 10 : 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    whileHover={{
-                      scale: 1.05,
-                      y: -5,
-                    }}
+                    whileHover={isMobile ? undefined : { scale: 1.05, y: -5 }}
                     viewport={{ once: true }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 400,
-                      damping: 17,
-                      delay: index * 0.1
-                    }}
+                    transition={isMobile
+                      ? { duration: 0.3, delay: index * 0.05 }
+                      : { type: "spring", stiffness: 400, damping: 17, delay: index * 0.1 }
+                    }
                     className="group relative bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-xl rounded-2xl border border-gray-800 p-6 hover:border-cyan-500/50 transition-colors duration-300 cursor-pointer"
                   >
-                    {/* Glow effect on hover */}
-                    <div className="absolute inset-0 rounded-2xl bg-cyan-500/0 group-hover:bg-cyan-500/5 transition-colors duration-300" />
-                    <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 opacity-0 group-hover:opacity-20 blur transition-opacity duration-300" />
+                    {/* Glow effect on hover - solo desktop */}
+                    {!isMobile && (
+                      <>
+                        <div className="absolute inset-0 rounded-2xl bg-cyan-500/0 group-hover:bg-cyan-500/5 transition-colors duration-300" />
+                        <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 opacity-0 group-hover:opacity-20 blur transition-opacity duration-300" />
+                      </>
+                    )}
 
                     <div className="relative">
-                      <motion.div
-                        className="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center mb-4 text-cyan-400"
-                        whileHover={{
-                          scale: 1.2,
-                          rotate: 5,
-                        }}
-                        transition={{ type: "spring", stiffness: 400 }}
-                      >
+                      <div className="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center mb-4 text-cyan-400">
                         {value.icon}
-                      </motion.div>
+                      </div>
                       <h4 className="text-white font-semibold mb-2 group-hover:text-cyan-400 transition-colors duration-300">{value.title}</h4>
                       <p className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors duration-300">{value.description}</p>
                     </div>
