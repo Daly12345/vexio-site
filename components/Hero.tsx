@@ -6,6 +6,7 @@ import MagneticButton from "./MagneticButton";
 
 export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // For 3D tilt effect on mockup
@@ -15,7 +16,20 @@ export default function Hero() {
   const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [15, -15]), { stiffness: 100, damping: 30 });
   const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-15, 15]), { stiffness: 100, damping: 30 });
 
+  // Detect mobile device
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    // Skip mouse tracking on mobile
+    if (isMobile) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth - 0.5) * 20,
@@ -33,7 +47,7 @@ export default function Hero() {
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, isMobile]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -92,8 +106,8 @@ export default function Hero() {
       {/* Grid pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-10" />
 
-      {/* Floating geometric shapes */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Floating geometric shapes - Hidden on mobile for performance */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none hidden md:block">
         {/* Large rotating ring */}
         <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-cyan-500/10 rounded-full"
@@ -157,18 +171,18 @@ export default function Hero() {
         ))}
       </div>
 
-      {/* Parallax gradient orbs */}
+      {/* Parallax gradient orbs - Static on mobile, animated on desktop */}
       <motion.div
-        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-3xl"
-        animate={{
+        className="absolute top-1/4 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-cyan-500/20 rounded-full blur-3xl"
+        animate={isMobile ? {} : {
           x: mousePosition.x * 2,
           y: mousePosition.y * 2,
         }}
         transition={{ type: "spring", stiffness: 50, damping: 30 }}
       />
       <motion.div
-        className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-3xl"
-        animate={{
+        className="absolute bottom-1/4 right-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-blue-500/20 rounded-full blur-3xl"
+        animate={isMobile ? {} : {
           x: mousePosition.x * -2,
           y: mousePosition.y * -2,
         }}
@@ -331,9 +345,94 @@ export default function Hero() {
                 </div>
               ))}
             </motion.div>
+
+            {/* Mobile mockup - Simplified version for smaller screens */}
+            <motion.div
+              className="mt-10 lg:hidden"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <div className="relative mx-auto max-w-xs">
+                {/* Phone mockup for mobile */}
+                <motion.div
+                  animate={{ y: [-5, 5, -5] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <div className="bg-gray-900 rounded-[2rem] p-2 shadow-2xl border border-gray-700 mx-auto w-[200px]">
+                    {/* Phone notch */}
+                    <div className="absolute top-4 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-full z-10" />
+
+                    {/* Phone screen */}
+                    <div className="bg-gradient-to-br from-gray-900 to-black rounded-[1.5rem] overflow-hidden aspect-[9/19] p-3 pt-6">
+                      {/* Mini nav */}
+                      <div className="w-16 h-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded mb-4" />
+
+                      {/* Content lines */}
+                      <div className="space-y-2 mb-4">
+                        <div className="w-full h-2 bg-white/80 rounded" />
+                        <div className="w-3/4 h-2 bg-gray-600 rounded" />
+                      </div>
+
+                      {/* Image placeholder */}
+                      <motion.div
+                        className="w-full aspect-video bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-lg border border-cyan-500/30 mb-4"
+                        animate={{
+                          boxShadow: [
+                            "0 0 10px rgba(6, 182, 212, 0.2)",
+                            "0 0 20px rgba(6, 182, 212, 0.4)",
+                            "0 0 10px rgba(6, 182, 212, 0.2)"
+                          ]
+                        }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+
+                      {/* More content */}
+                      <div className="space-y-2">
+                        <div className="w-full h-1.5 bg-gray-700 rounded" />
+                        <div className="w-2/3 h-1.5 bg-gray-700 rounded" />
+                      </div>
+
+                      {/* CTA button */}
+                      <motion.div
+                        className="w-20 h-6 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full mt-4 mx-auto"
+                        animate={{ scale: [1, 1.05, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Glow effect */}
+                  <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-cyan-500/30 blur-xl rounded-full" />
+                </motion.div>
+
+                {/* Floating icons around phone - simplified */}
+                <motion.div
+                  className="absolute -left-4 top-1/4 w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center text-sm shadow-lg"
+                  animate={{ y: [-5, 5, -5], rotate: [0, 10, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  ⚡
+                </motion.div>
+                <motion.div
+                  className="absolute -right-4 top-1/3 w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center text-sm shadow-lg"
+                  animate={{ y: [5, -5, 5], rotate: [0, -10, 0] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                >
+                  🚀
+                </motion.div>
+                <motion.div
+                  className="absolute -right-2 bottom-1/4 w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-xl flex items-center justify-center text-sm shadow-lg"
+                  animate={{ y: [-3, 3, -3], rotate: [0, 5, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                >
+                  🎨
+                </motion.div>
+              </div>
+            </motion.div>
           </motion.div>
 
-          {/* Right side - 3D Device Mockup */}
+          {/* Right side - 3D Device Mockup (Desktop only) */}
           <motion.div
             className="relative hidden lg:block"
             initial={{ opacity: 0, x: 100 }}
