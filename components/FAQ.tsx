@@ -103,7 +103,7 @@ export default function FAQ() {
                     {faq.question}
                   </span>
                   <div
-                    className={`flex-shrink-0 w-6 h-6 bg-cyan-500/10 rounded flex items-center justify-center transition-transform duration-200 ${
+                    className={`flex-shrink-0 w-6 h-6 bg-cyan-500/10 rounded flex items-center justify-center ${
                       openIndex === index ? "rotate-180" : ""
                     }`}
                   >
@@ -123,22 +123,16 @@ export default function FAQ() {
                   </div>
                 </button>
 
-                {/* CSS-only accordion - no Framer Motion */}
-                <div
-                  className={`grid transition-all duration-200 ease-out ${
-                    openIndex === index ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                  }`}
-                >
-                  <div className="overflow-hidden">
-                    <div className="px-4 pb-4">
-                      <div className="pt-2 border-t border-gray-800">
-                        <p className="text-gray-400 text-sm leading-relaxed pt-3">
-                          {faq.answer}
-                        </p>
-                      </div>
+                {/* Accordion content - mostrar/ocultar inmediato */}
+                {openIndex === index && (
+                  <div className="px-4 pb-4">
+                    <div className="pt-2 border-t border-gray-800">
+                      <p className="text-gray-400 text-sm leading-relaxed pt-3">
+                        {faq.answer}
+                      </p>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>
