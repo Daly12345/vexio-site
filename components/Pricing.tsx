@@ -134,7 +134,7 @@ export default function Pricing() {
               <TiltCard
                 key={index}
                 className={`relative group transition-all duration-500 ${
-                  highlighted ? 'lg:scale-105 lg:z-10' : ''
+                  highlighted ? 'md:scale-[1.02] lg:scale-105 lg:z-10' : ''
                 }`}
                 tiltAmount={8}
                 scale={1}
@@ -152,7 +152,7 @@ export default function Pricing() {
                     highlighted ? 'opacity-100' : 'opacity-0'
                   }`} />
 
-                  <div className="relative p-8 flex flex-col h-full">
+                  <div className="relative p-6 md:p-8 flex flex-col h-full">
                     {/* Popular badge */}
                     {plan.popular && (
                       <div className="mb-4 -mt-1">

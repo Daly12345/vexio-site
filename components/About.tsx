@@ -124,7 +124,7 @@ export default function About() {
           <div className="space-y-8">
             {/* Values grid */}
             <ScrollReveal direction="right">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-4">
                 {values.map((value, index) => (
                   <motion.div
                     key={value.title}
