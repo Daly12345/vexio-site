@@ -171,23 +171,27 @@ export default function Hero() {
         ))}
       </div>
 
-      {/* Parallax gradient orbs - Static on mobile, animated on desktop */}
-      <motion.div
-        className="absolute top-1/4 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-cyan-500/20 rounded-full blur-3xl"
-        animate={isMobile ? {} : {
-          x: mousePosition.x * 2,
-          y: mousePosition.y * 2,
-        }}
-        transition={{ type: "spring", stiffness: 50, damping: 30 }}
-      />
-      <motion.div
-        className="absolute bottom-1/4 right-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-blue-500/20 rounded-full blur-3xl"
-        animate={isMobile ? {} : {
-          x: mousePosition.x * -2,
-          y: mousePosition.y * -2,
-        }}
-        transition={{ type: "spring", stiffness: 50, damping: 30 }}
-      />
+      {/* Parallax gradient orbs - Hidden on mobile for performance */}
+      {!isMobile && (
+        <>
+          <motion.div
+            className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-3xl"
+            animate={{
+              x: mousePosition.x * 2,
+              y: mousePosition.y * 2,
+            }}
+            transition={{ type: "spring", stiffness: 50, damping: 30 }}
+          />
+          <motion.div
+            className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-3xl"
+            animate={{
+              x: mousePosition.x * -2,
+              y: mousePosition.y * -2,
+            }}
+            transition={{ type: "spring", stiffness: 50, damping: 30 }}
+          />
+        </>
+      )}
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">

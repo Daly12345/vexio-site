@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 const technologies = [
   {
@@ -114,7 +115,16 @@ const technologies = [
 ];
 
 export default function Technologies() {
-  // Duplicate array for seamless loop
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Duplicate array for seamless loop (desktop only)
   const duplicatedTechnologies = [...technologies, ...technologies];
 
   return (
@@ -142,63 +152,77 @@ export default function Technologies() {
           </h2>
         </motion.div>
 
-        {/* Marquee container */}
-        <div className="relative">
-          {/* Gradient masks */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 tech-gradient-left z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 tech-gradient-right z-10 pointer-events-none" />
-
-          {/* Scrolling track */}
-          <div className="flex overflow-hidden">
-            <motion.div
-              className="flex gap-8 py-4"
-              animate={{
-                x: [0, -50 * technologies.length],
-              }}
-              transition={{
-                x: {
-                  duration: 25,
-                  repeat: Infinity,
-                  ease: "linear",
-                },
-              }}
-            >
-              {duplicatedTechnologies.map((tech, index) => (
-                <motion.div
-                  key={`${tech.name}-${index}`}
-                  className="flex-shrink-0 group"
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
-                  <div className="relative flex flex-col items-center justify-center w-24 h-24 bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl transition-all duration-300 group-hover:border-cyan-500/50 group-hover:bg-gray-800/50">
-                    {/* Glow effect on hover */}
-                    <div
-                      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"
-                      style={{ backgroundColor: tech.color }}
-                    />
-
-                    {/* Icon */}
-                    <div
-                      className="relative text-gray-400 group-hover:text-white transition-colors duration-300"
-                      style={{
-                        color: undefined,
-                      }}
-                    >
-                      <div className="group-hover:scale-110 transition-transform duration-300" style={{ color: tech.color }}>
-                        {tech.icon}
-                      </div>
-                    </div>
-
-                    {/* Name */}
-                    <p className="mt-2 text-xs text-gray-500 group-hover:text-gray-300 transition-colors duration-300 font-medium">
-                      {tech.name}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+        {/* Mobile: Static grid (no animation) */}
+        {isMobile ? (
+          <div className="grid grid-cols-4 gap-4">
+            {technologies.slice(0, 8).map((tech) => (
+              <div
+                key={tech.name}
+                className="flex flex-col items-center justify-center p-3 bg-gray-900/80 border border-gray-800 rounded-xl"
+              >
+                <div style={{ color: tech.color }}>
+                  {tech.icon}
+                </div>
+                <p className="mt-1 text-[10px] text-gray-400 font-medium text-center">
+                  {tech.name}
+                </p>
+              </div>
+            ))}
           </div>
-        </div>
+        ) : (
+          /* Desktop: Animated marquee */
+          <div className="relative">
+            {/* Gradient masks */}
+            <div className="absolute left-0 top-0 bottom-0 w-32 tech-gradient-left z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-32 tech-gradient-right z-10 pointer-events-none" />
+
+            {/* Scrolling track */}
+            <div className="flex overflow-hidden">
+              <motion.div
+                className="flex gap-8 py-4"
+                animate={{
+                  x: [0, -50 * technologies.length],
+                }}
+                transition={{
+                  x: {
+                    duration: 25,
+                    repeat: Infinity,
+                    ease: "linear",
+                  },
+                }}
+              >
+                {duplicatedTechnologies.map((tech, index) => (
+                  <motion.div
+                    key={`${tech.name}-${index}`}
+                    className="flex-shrink-0 group"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
+                    <div className="relative flex flex-col items-center justify-center w-24 h-24 bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl transition-all duration-300 group-hover:border-cyan-500/50 group-hover:bg-gray-800/50">
+                      {/* Glow effect on hover */}
+                      <div
+                        className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+                        style={{ backgroundColor: tech.color }}
+                      />
+
+                      {/* Icon */}
+                      <div className="relative text-gray-400 group-hover:text-white transition-colors duration-300">
+                        <div className="group-hover:scale-110 transition-transform duration-300" style={{ color: tech.color }}>
+                          {tech.icon}
+                        </div>
+                      </div>
+
+                      {/* Name */}
+                      <p className="mt-2 text-xs text-gray-500 group-hover:text-gray-300 transition-colors duration-300 font-medium">
+                        {tech.name}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </div>
+        )}
 
         {/* Bottom text */}
         <motion.p

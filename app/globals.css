@@ -334,6 +334,52 @@ html.lenis, html.lenis body {
   color: inherit;
 }
 
+/* ===== MOBILE PERFORMANCE OPTIMIZATIONS ===== */
+@media (max-width: 1023px) {
+  /* Disable backdrop-blur on mobile - very expensive */
+  .backdrop-blur-xl,
+  .backdrop-blur-lg,
+  .backdrop-blur-md,
+  .backdrop-blur-sm,
+  .backdrop-blur {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .glass,
+  .glass-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(17, 17, 17, 0.95) !important;
+  }
+
+  /* Reduce blur intensity on decorative elements */
+  .blur-3xl {
+    filter: blur(40px) !important;
+  }
+
+  .blur-2xl {
+    filter: blur(25px) !important;
+  }
+
+  .blur-xl {
+    filter: blur(15px) !important;
+  }
+
+  /* Disable complex animations */
+  .animate-pulse,
+  .animate-spin-slow {
+    animation: none !important;
+  }
+
+  /* Reduce gradient animation complexity */
+  .animate-gradient,
+  .text-gradient-animated {
+    animation: none !important;
+    background-size: 100% 100% !important;
+  }
+}
+
 /* Focus styles */
 *:focus-visible {
   outline: 2px solid #06b6d4;
