@@ -63,7 +63,9 @@ export default function ContactWizard() {
     budget: ""
   });
   const [recommendedPlan, setRecommendedPlan] = useState<keyof typeof plans | null>(null);
+  const [idealPlan, setIdealPlan] = useState<keyof typeof plans | null>(null);
   const [recommendationReason, setRecommendationReason] = useState<string>("");
+  const [missingFeatures, setMissingFeatures] = useState<string[]>([]);
 
   const businessTypes = [
     { id: "food", label: "Restaurante / Cafetería / Comida", icon: "🍽️" },
@@ -99,7 +101,12 @@ export default function ContactWizard() {
     { id: "flexible", label: "Flexible / No estoy seguro", range: "A definir" }
   ];
 
-  const calculateRecommendation = (): { plan: keyof typeof plans; reason: string } => {
+  const calculateRecommendation = (): {
+    plan: keyof typeof plans;
+    ideal: keyof typeof plans;
+    reason: string;
+    missing: string[];
+  } => {
     const { pages, features, budget } = answers;
 
     const planOrder: (keyof typeof plans)[] = ["micro", "basico", "profesional", "premium", "ecommerce"];
@@ -120,6 +127,15 @@ export default function ContactWizard() {
       blog: "blog"
     };
 
+    // Qué features incluye cada plan
+    const planFeatures: Record<keyof typeof plans, string[]> = {
+      micro: [],
+      basico: ["menu"],
+      profesional: ["menu", "booking"],
+      premium: ["menu", "booking", "multilang", "blog"],
+      ecommerce: ["menu", "booking", "multilang", "blog", "ecommerce"]
+    };
+
     // ========== PASO 1: Determinar plan BASE por número de páginas ==========
     let basePlan: keyof typeof plans = "micro";
     if (pages === "landing") basePlan = "micro";
@@ -127,30 +143,45 @@ export default function ContactWizard() {
     else if (pages === "medium") basePlan = "profesional";
     else if (pages === "large") basePlan = "premium";
 
-    // ========== PASO 2: Ajustar por features ==========
+    // ========== PASO 2: Calcular plan IDEAL sin considerar presupuesto ==========
 
     // E-commerce → siempre E-commerce
     if (features.includes("ecommerce")) {
-      const result = applyBudgetLimit("ecommerce", budget, planOrder);
-      const reason = result === "ecommerce"
-        ? "Necesitas una tienda en línea completa con carrito, pagos e inventario."
-        : `Necesitas tienda en línea, pero tu presupuesto alcanza hasta el plan ${plans[result].name}. Contáctanos para encontrar una solución.`;
-      return { plan: result, reason };
+      const idealPlan: keyof typeof plans = "ecommerce";
+      const result = applyBudgetLimit(idealPlan, budget, planOrder);
+
+      if (result === idealPlan) {
+        return {
+          plan: result,
+          ideal: idealPlan,
+          reason: "Necesitas una tienda en línea completa con carrito, pagos e inventario.",
+          missing: []
+        };
+      } else {
+        return {
+          plan: result,
+          ideal: idealPlan,
+          reason: `Tu presupuesto alcanza el plan ${plans[result].name}.`,
+          missing: ["tienda en línea completa", "carrito de compras", "pasarela de pagos", "inventario"]
+        };
+      }
     }
 
     // Si solo pide info básica
     if (features.includes("none") || features.length === 0) {
-      const result = applyBudgetLimit(basePlan, budget, planOrder);
-      const reason = `Para ${pageLabels[pages]} con información básica, este plan cubre perfectamente tus necesidades.`;
-      return { plan: result, reason };
+      return {
+        plan: basePlan,
+        ideal: basePlan,
+        reason: `Para ${pageLabels[pages]} con información básica, este plan es perfecto.`,
+        missing: []
+      };
     }
 
-    // Calcular plan mínimo requerido por TODAS las features seleccionadas
+    // Calcular plan mínimo requerido por TODAS las features
     let featurePlan: keyof typeof plans = "micro";
     let mainFeature = "";
     let featurePlanIndex = 0;
 
-    // Evaluar CADA feature y quedarse con la que requiere el plan más alto
     if (features.includes("multilang")) {
       const idx = planOrder.indexOf("premium");
       if (idx > featurePlanIndex) {
@@ -188,28 +219,34 @@ export default function ContactWizard() {
     // ========== PASO 3: Tomar el MAYOR entre basePlan y featurePlan ==========
     const baseIndex = planOrder.indexOf(basePlan);
     const featureIndex = planOrder.indexOf(featurePlan);
-
-    let finalPlan: keyof typeof plans;
-    let reason: string;
-
-    if (featureIndex > baseIndex) {
-      // La feature requiere un plan mayor
-      finalPlan = planOrder[featureIndex];
-      reason = `Seleccionaste ${featureLabels[mainFeature]}, que requiere funcionalidades del plan ${plans[finalPlan].name}.`;
-    } else {
-      // Las páginas requieren un plan mayor
-      finalPlan = planOrder[baseIndex];
-      reason = `Para ${pageLabels[pages]}, este plan incluye todo lo que necesitas.`;
-    }
+    const idealPlanKey = planOrder[Math.max(baseIndex, featureIndex)];
 
     // ========== PASO 4: Aplicar límite de presupuesto ==========
-    const result = applyBudgetLimit(finalPlan, budget, planOrder);
+    const result = applyBudgetLimit(idealPlanKey, budget, planOrder);
 
-    if (result !== finalPlan) {
-      reason = `Lo ideal sería el plan ${plans[finalPlan].name}, pero con tu presupuesto te recomendamos ${plans[result].name}. Contáctanos para ver opciones.`;
+    // ========== PASO 5: Calcular qué features faltan si el plan es menor ==========
+    let missing: string[] = [];
+    let reason: string;
+
+    if (result !== idealPlanKey) {
+      // El presupuesto limitó el plan
+      const resultFeatures = planFeatures[result];
+      const selectedFeatures = features.filter(f => f !== "none");
+
+      missing = selectedFeatures
+        .filter(f => !resultFeatures.includes(f))
+        .map(f => featureLabels[f]);
+
+      reason = `Tu presupuesto alcanza el plan ${plans[result].name}.`;
+    } else {
+      if (featureIndex > baseIndex) {
+        reason = `Incluye ${featureLabels[mainFeature]} que seleccionaste.`;
+      } else {
+        reason = `Para ${pageLabels[pages]}, este plan cubre todo lo que necesitas.`;
+      }
     }
 
-    return { plan: result, reason };
+    return { plan: result, ideal: idealPlanKey, reason, missing };
   };
 
   // Función para limitar por presupuesto (no recomendar más de lo que pueden pagar)
@@ -241,9 +278,11 @@ export default function ContactWizard() {
 
   const handleNext = () => {
     if (step === 4) {
-      const { plan, reason } = calculateRecommendation();
+      const { plan, ideal, reason, missing } = calculateRecommendation();
       setRecommendedPlan(plan);
+      setIdealPlan(ideal);
       setRecommendationReason(reason);
+      setMissingFeatures(missing);
       setStep("result");
     } else if (step !== "result") {
       setStep((step + 1) as Step);
@@ -276,7 +315,9 @@ export default function ContactWizard() {
     setStep(1);
     setAnswers({ businessType: "", pages: "", features: [], budget: "" });
     setRecommendedPlan(null);
+    setIdealPlan(null);
     setRecommendationReason("");
+    setMissingFeatures([]);
   };
 
   const canProceed = () => {
@@ -461,24 +502,31 @@ Funcionalidades que necesito: ${featuresLabels || "Información básica"}
         {/* Result */}
         {step === "result" && currentPlan && (
           <div className="space-y-6">
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-full mb-4">
-                <svg className="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+            {/* Si el plan ideal es diferente al recomendado, mostrar advertencia */}
+            {idealPlan && recommendedPlan && idealPlan !== recommendedPlan && (
+              <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">⚠️</span>
+                  <div>
+                    <p className="text-yellow-400 font-semibold mb-1">
+                      Tu plan ideal sería: {plans[idealPlan].name} ({plans[idealPlan].priceRange})
+                    </p>
+                    <p className="text-yellow-300/80 text-sm">
+                      Basado en lo que necesitas, pero tu presupuesto alcanza hasta el plan de abajo.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">
-                Te recomendamos el plan
-              </h3>
-              <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-4">
+            )}
+
+            <div className="text-center">
+              <p className="text-gray-400 text-sm mb-1">
+                {idealPlan !== recommendedPlan ? "Con tu presupuesto te recomendamos:" : "Te recomendamos el plan:"}
+              </p>
+              <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">
                 {currentPlan.name}
               </div>
-              {/* Mensaje explicativo */}
-              <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-lg px-4 py-3 max-w-md mx-auto">
-                <p className="text-sm text-cyan-300">
-                  💡 {recommendationReason}
-                </p>
-              </div>
+              <p className="text-sm text-cyan-400">{recommendationReason}</p>
             </div>
 
             <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
@@ -504,6 +552,30 @@ Funcionalidades que necesito: ${featuresLabels || "Información básica"}
                 Entrega estimada: {currentPlan.delivery}
               </div>
             </div>
+
+            {/* Advertencia de features que NO incluye */}
+            {missingFeatures.length > 0 && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <span className="text-xl">❌</span>
+                  <div>
+                    <p className="text-red-400 font-semibold mb-2">
+                      Este plan NO incluye lo que seleccionaste:
+                    </p>
+                    <ul className="space-y-1">
+                      {missingFeatures.map((feature, idx) => (
+                        <li key={idx} className="text-red-300/80 text-sm flex items-center gap-2">
+                          <span>•</span> {feature}
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="text-red-300/60 text-xs mt-3">
+                      Para incluir estas funcionalidades necesitas un presupuesto mayor.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="space-y-3">
               <a
