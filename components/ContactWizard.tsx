@@ -63,6 +63,7 @@ export default function ContactWizard() {
     budget: ""
   });
   const [recommendedPlan, setRecommendedPlan] = useState<keyof typeof plans | null>(null);
+  const [recommendationReason, setRecommendationReason] = useState<string>("");
 
   const businessTypes = [
     { id: "food", label: "Restaurante / Cafetería / Comida", icon: "🍽️" },
@@ -98,10 +99,26 @@ export default function ContactWizard() {
     { id: "flexible", label: "Flexible / No estoy seguro", range: "A definir" }
   ];
 
-  const calculateRecommendation = (): keyof typeof plans => {
+  const calculateRecommendation = (): { plan: keyof typeof plans; reason: string } => {
     const { pages, features, budget } = answers;
 
     const planOrder: (keyof typeof plans)[] = ["micro", "basico", "profesional", "premium", "ecommerce"];
+
+    // Nombres legibles
+    const pageLabels: Record<string, string> = {
+      landing: "1 página (landing)",
+      small: "2-5 páginas",
+      medium: "6-10 páginas",
+      large: "más de 10 páginas"
+    };
+
+    const featureLabels: Record<string, string> = {
+      menu: "menú digital",
+      booking: "sistema de citas/reservaciones",
+      ecommerce: "tienda en línea",
+      multilang: "versión en inglés",
+      blog: "blog"
+    };
 
     // ========== PASO 1: Determinar plan BASE por número de páginas ==========
     let basePlan: keyof typeof plans = "micro";
@@ -110,45 +127,67 @@ export default function ContactWizard() {
     else if (pages === "medium") basePlan = "profesional";
     else if (pages === "large") basePlan = "premium";
 
-    // ========== PASO 2: Ajustar por features (solo puede SUBIR, nunca bajar) ==========
+    // ========== PASO 2: Ajustar por features ==========
 
     // E-commerce → siempre E-commerce
     if (features.includes("ecommerce")) {
-      return applyBudgetLimit("ecommerce", budget, planOrder);
+      const result = applyBudgetLimit("ecommerce", budget, planOrder);
+      const reason = result === "ecommerce"
+        ? "Necesitas una tienda en línea completa con carrito, pagos e inventario."
+        : `Necesitas tienda en línea, pero tu presupuesto alcanza hasta el plan ${plans[result].name}. Contáctanos para encontrar una solución.`;
+      return { plan: result, reason };
     }
 
-    // Si solo pide info básica, quedarse con el plan base
+    // Si solo pide info básica
     if (features.includes("none") || features.length === 0) {
-      return applyBudgetLimit(basePlan, budget, planOrder);
+      const result = applyBudgetLimit(basePlan, budget, planOrder);
+      const reason = `Para ${pageLabels[pages]} con información básica, este plan cubre perfectamente tus necesidades.`;
+      return { plan: result, reason };
     }
 
     // Calcular plan mínimo requerido por features
     let featurePlan: keyof typeof plans = "micro";
+    let mainFeature = "";
 
-    // Bilingüe → requiere Premium (doble contenido)
     if (features.includes("multilang")) {
       featurePlan = "premium";
-    }
-    // Blog → requiere Profesional mínimo, Premium si es complejo
-    else if (features.includes("blog")) {
+      mainFeature = "multilang";
+    } else if (features.includes("blog")) {
       featurePlan = features.length > 1 ? "premium" : "profesional";
-    }
-    // Citas/Reservaciones → requiere Profesional
-    else if (features.includes("booking")) {
+      mainFeature = "blog";
+    } else if (features.includes("booking")) {
       featurePlan = "profesional";
-    }
-    // Menú digital → requiere Básico mínimo
-    else if (features.includes("menu")) {
+      mainFeature = "booking";
+    } else if (features.includes("menu")) {
       featurePlan = "basico";
+      mainFeature = "menu";
     }
 
     // ========== PASO 3: Tomar el MAYOR entre basePlan y featurePlan ==========
     const baseIndex = planOrder.indexOf(basePlan);
     const featureIndex = planOrder.indexOf(featurePlan);
-    const finalPlan = planOrder[Math.max(baseIndex, featureIndex)];
+
+    let finalPlan: keyof typeof plans;
+    let reason: string;
+
+    if (featureIndex > baseIndex) {
+      // La feature requiere un plan mayor
+      finalPlan = planOrder[featureIndex];
+      reason = `Seleccionaste ${featureLabels[mainFeature]}, que requiere funcionalidades del plan ${plans[finalPlan].name}.`;
+    } else {
+      // Las páginas requieren un plan mayor
+      finalPlan = planOrder[baseIndex];
+      reason = `Para ${pageLabels[pages]}, este plan incluye todo lo que necesitas.`;
+    }
 
     // ========== PASO 4: Aplicar límite de presupuesto ==========
-    return applyBudgetLimit(finalPlan, budget, planOrder);
+    const result = applyBudgetLimit(finalPlan, budget, planOrder);
+
+    if (result !== finalPlan) {
+      reason = `Lo ideal sería el plan ${plans[finalPlan].name}, pero con tu presupuesto te recomendamos ${plans[result].name}. Contáctanos para ver opciones.`;
+    }
+
+    return { plan: result, reason };
   };
 
   // Función para limitar por presupuesto (no recomendar más de lo que pueden pagar)
@@ -180,8 +219,9 @@ export default function ContactWizard() {
 
   const handleNext = () => {
     if (step === 4) {
-      const recommendation = calculateRecommendation();
-      setRecommendedPlan(recommendation);
+      const { plan, reason } = calculateRecommendation();
+      setRecommendedPlan(plan);
+      setRecommendationReason(reason);
       setStep("result");
     } else if (step !== "result") {
       setStep((step + 1) as Step);
@@ -214,6 +254,7 @@ export default function ContactWizard() {
     setStep(1);
     setAnswers({ businessType: "", pages: "", features: [], budget: "" });
     setRecommendedPlan(null);
+    setRecommendationReason("");
   };
 
   const canProceed = () => {
@@ -407,8 +448,14 @@ Funcionalidades que necesito: ${featuresLabels || "Información básica"}
               <h3 className="text-2xl font-bold text-white mb-2">
                 Te recomendamos el plan
               </h3>
-              <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+              <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-4">
                 {currentPlan.name}
+              </div>
+              {/* Mensaje explicativo */}
+              <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-lg px-4 py-3 max-w-md mx-auto">
+                <p className="text-sm text-cyan-300">
+                  💡 {recommendationReason}
+                </p>
               </div>
             </div>
 
