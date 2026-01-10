@@ -89,17 +89,17 @@ export default function Stats() {
       <motion.div
         ref={containerRef}
         className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-        initial={{ opacity: 0, y: 50 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.6 }}
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.5 }}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.4, delay: index * 0.08 }}
             >
               <TiltCard tiltAmount={12} scale={1.02} className="h-full">
                 <div className="group relative glass-card p-8 rounded-2xl text-center hover:border-cyan-500/50 transition-all duration-300 h-full">

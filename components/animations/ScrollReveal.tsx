@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef, ReactNode, useState, useEffect } from "react";
+import { useRef, ReactNode } from "react";
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -17,51 +17,23 @@ export default function ScrollReveal({
   children,
   className = "",
   delay = 0,
-  duration = 0.6,
-  direction = "up",
-  distance = 50,
+  duration = 0.5,
   once = true,
 }: ScrollRevealProps) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once, margin: "-100px" });
-  const [isMobile, setIsMobile] = useState(false);
+  const isInView = useInView(ref, { once, margin: "-50px" });
 
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
-  }, []);
-
-  // Móvil: animaciones más rápidas y suaves
-  const mobileDuration = duration * 0.5;
-  const mobileDistance = distance * 0.4;
-  const mobileDelay = delay * 0.5;
-
-  const actualDistance = isMobile ? mobileDistance : distance;
-
-  const getInitialPosition = () => {
-    switch (direction) {
-      case "up":
-        return { y: actualDistance, x: 0 };
-      case "down":
-        return { y: -actualDistance, x: 0 };
-      case "left":
-        return { x: actualDistance, y: 0 };
-      case "right":
-        return { x: -actualDistance, y: 0 };
-      case "none":
-        return { x: 0, y: 0 };
-    }
-  };
-
+  // CLS-optimized: only animate opacity, not position
   return (
     <motion.div
       ref={ref}
       className={className}
-      initial={{ opacity: 0, ...getInitialPosition() }}
-      animate={isInView ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, ...getInitialPosition() }}
+      initial={{ opacity: 0 }}
+      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
       transition={{
-        duration: isMobile ? mobileDuration : duration,
-        delay: isMobile ? mobileDelay : delay,
-        ease: isMobile ? "easeOut" : [0.25, 0.4, 0.25, 1],
+        duration,
+        delay,
+        ease: "easeOut",
       }}
     >
       {children}

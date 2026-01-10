@@ -49,25 +49,25 @@ export default function Hero() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [mouseX, mouseY, isMobile]);
 
+  // CLS-optimized variants - only animate opacity, not position
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.2,
+        staggerChildren: 0.08,
+        delayChildren: 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 40 },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      y: 0,
       transition: {
-        duration: 0.8,
-        ease: [0.25, 0.4, 0.25, 1] as [number, number, number, number],
+        duration: 0.5,
+        ease: "easeOut",
       },
     },
   };
@@ -353,8 +353,8 @@ export default function Hero() {
             {/* Mobile mockup - Simplified version for smaller screens */}
             <motion.div
               className="mt-10 lg:hidden"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.3 }}
             >
               <div className="relative mx-auto max-w-xs">
@@ -410,9 +410,9 @@ export default function Hero() {
           {/* Right side - 3D Device Mockup (Desktop only) */}
           <motion.div
             className="relative hidden lg:block"
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, delay: 0.5 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
           >
             {/* Orbiting elements */}
             <div className="absolute inset-0 flex items-center justify-center">
@@ -557,9 +557,9 @@ export default function Hero() {
             {/* Floating phone mockup */}
             <motion.div
               className="absolute -right-4 bottom-10 z-20"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 0.8 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
             >
               <motion.div
                 animate={{ y: [-5, 5, -5] }}
@@ -592,9 +592,9 @@ export default function Hero() {
             {/* Floating code snippet */}
             <motion.div
               className="absolute -left-8 top-20 z-20"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.2, duration: 0.8 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
             >
               <motion.div
                 animate={{ y: [-8, 8, -8] }}
@@ -627,9 +627,9 @@ export default function Hero() {
       {/* Scroll indicator */}
       <motion.div
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1, duration: 0.5 }}
       >
         <motion.div
           className="flex flex-col items-center gap-2 text-gray-500"

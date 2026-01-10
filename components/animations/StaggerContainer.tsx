@@ -46,17 +46,17 @@ export function StaggerItem({
   children: ReactNode;
   className?: string;
 }) {
+  // CLS-optimized: only animate opacity
   return (
     <motion.div
       className={className}
       variants={{
-        hidden: { opacity: 0, y: 30 },
+        hidden: { opacity: 0 },
         visible: {
           opacity: 1,
-          y: 0,
           transition: {
-            duration: 0.5,
-            ease: [0.25, 0.4, 0.25, 1],
+            duration: 0.4,
+            ease: "easeOut",
           },
         },
       }}
