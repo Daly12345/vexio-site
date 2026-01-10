@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef, ReactNode, useState, useEffect } from "react";
+import { useRef, ReactNode } from "react";
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -13,13 +13,7 @@ interface ScrollRevealProps {
   once?: boolean;
 }
 
-// Mobile version - completely static
-function MobileScrollReveal({ children, className = "" }: ScrollRevealProps) {
-  return <div className={className}>{children}</div>;
-}
-
-// Desktop version with animations
-function DesktopScrollReveal({
+export default function ScrollReveal({
   children,
   className = "",
   delay = 0,
@@ -55,20 +49,10 @@ function DesktopScrollReveal({
       transition={{
         duration,
         delay,
-        ease: "easeOut",
+        ease: [0.25, 0.4, 0.25, 1],
       }}
     >
       {children}
     </motion.div>
   );
-}
-
-export default function ScrollReveal(props: ScrollRevealProps) {
-  const [isMobile, setIsMobile] = useState(true);
-
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 1024);
-  }, []);
-
-  return isMobile ? <MobileScrollReveal {...props} /> : <DesktopScrollReveal {...props} />;
 }

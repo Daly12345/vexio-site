@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 interface MagneticButtonProps {
@@ -10,13 +10,7 @@ interface MagneticButtonProps {
   radius?: number;
 }
 
-// Mobile version - just render children directly
-function MobileMagneticButton({ children, className = "" }: MagneticButtonProps) {
-  return <div className={className}>{children}</div>;
-}
-
-// Desktop version with magnetic effect
-function DesktopMagneticButton({
+export default function MagneticButton({
   children,
   className = "",
   strength = 0.3,
@@ -61,14 +55,4 @@ function DesktopMagneticButton({
       {children}
     </motion.div>
   );
-}
-
-export default function MagneticButton(props: MagneticButtonProps) {
-  const [isMobile, setIsMobile] = useState(true);
-
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 1024);
-  }, []);
-
-  return isMobile ? <MobileMagneticButton {...props} /> : <DesktopMagneticButton {...props} />;
 }

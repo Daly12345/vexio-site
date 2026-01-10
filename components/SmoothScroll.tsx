@@ -1,22 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
-  const [isMobile, setIsMobile] = useState(true); // Default to mobile
 
   useEffect(() => {
-    // Check if mobile
-    const checkMobile = window.innerWidth < 1024;
-    setIsMobile(checkMobile);
-
-    // Don't initialize Lenis on mobile - use native scroll for best performance
-    if (checkMobile) {
-      return;
-    }
-
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
