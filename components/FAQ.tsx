@@ -103,7 +103,7 @@ export default function FAQ() {
                     {faq.question}
                   </span>
                   <div
-                    className={`flex-shrink-0 w-6 h-6 bg-cyan-500/10 rounded flex items-center justify-center transition-transform duration-150 ${
+                    className={`flex-shrink-0 w-6 h-6 bg-cyan-500/10 rounded flex items-center justify-center ${
                       openIndex === index ? "rotate-180" : ""
                     }`}
                   >
@@ -123,12 +123,8 @@ export default function FAQ() {
                   </div>
                 </button>
 
-                {/* Accordion content - transición suave con max-height */}
-                <div
-                  className={`overflow-hidden transition-[max-height,opacity] duration-150 ease-out ${
-                    openIndex === index ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-                  }`}
-                >
+                {/* Accordion content - instantáneo */}
+                {openIndex === index && (
                   <div className="px-4 pb-4">
                     <div className="pt-2 border-t border-gray-800">
                       <p className="text-gray-400 text-sm leading-relaxed pt-3">
@@ -136,7 +132,7 @@ export default function FAQ() {
                       </p>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>
