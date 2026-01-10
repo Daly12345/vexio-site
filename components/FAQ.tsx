@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ScrollReveal from "./animations/ScrollReveal";
 import StaggerContainer, { StaggerItem } from "./animations/StaggerContainer";
@@ -50,6 +50,14 @@ const faqs = [
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   return (
     <section id="faq" className="relative py-24 bg-gradient-to-b from-black via-gray-900 to-black overflow-hidden">
@@ -75,33 +83,32 @@ export default function FAQ() {
           </div>
         </ScrollReveal>
 
-        <StaggerContainer className="space-y-4">
-          {faqs.map((faq, index) => (
-            <StaggerItem key={index}>
+        {/* Mobile: Simple version without heavy animations */}
+        {isMobile ? (
+          <div className="space-y-3">
+            {faqs.map((faq, index) => (
               <div
-                className={`group relative bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-xl rounded-2xl border transition-all duration-300 overflow-hidden ${
+                key={index}
+                className={`bg-gray-900/95 rounded-xl border overflow-hidden ${
                   openIndex === index
-                    ? "border-cyan-500/50 shadow-lg shadow-cyan-500/10"
-                    : "border-gray-800 hover:border-gray-700"
+                    ? "border-cyan-500/50"
+                    : "border-gray-800"
                 }`}
               >
-                {/* Glassmorphism effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="relative w-full text-left p-6 flex items-center justify-between gap-4"
+                  className="w-full text-left p-4 flex items-center justify-between gap-3"
                 >
-                  <span className="text-lg font-medium text-white group-hover:text-cyan-400 transition-colors">
+                  <span className="text-base font-medium text-white">
                     {faq.question}
                   </span>
-                  <motion.div
-                    animate={{ rotate: openIndex === index ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex-shrink-0 w-8 h-8 bg-cyan-500/10 rounded-lg flex items-center justify-center"
+                  <div
+                    className={`flex-shrink-0 w-6 h-6 bg-cyan-500/10 rounded flex items-center justify-center transition-transform duration-200 ${
+                      openIndex === index ? "rotate-180" : ""
+                    }`}
                   >
                     <svg
-                      className="w-5 h-5 text-cyan-400"
+                      className="w-4 h-4 text-cyan-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -113,31 +120,94 @@ export default function FAQ() {
                         d="M19 9l-7 7-7-7"
                       />
                     </svg>
-                  </motion.div>
+                  </div>
                 </button>
 
-                <AnimatePresence>
-                  {openIndex === index && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                    >
-                      <div className="px-6 pb-6">
-                        <div className="pt-2 border-t border-gray-800">
-                          <p className="text-gray-400 leading-relaxed pt-4">
-                            {faq.answer}
-                          </p>
-                        </div>
+                {/* CSS-only accordion - no Framer Motion */}
+                <div
+                  className={`grid transition-all duration-200 ease-out ${
+                    openIndex === index ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="px-4 pb-4">
+                      <div className="pt-2 border-t border-gray-800">
+                        <p className="text-gray-400 text-sm leading-relaxed pt-3">
+                          {faq.answer}
+                        </p>
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+            ))}
+          </div>
+        ) : (
+          /* Desktop: Full animations */
+          <StaggerContainer className="space-y-4">
+            {faqs.map((faq, index) => (
+              <StaggerItem key={index}>
+                <div
+                  className={`group relative bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-xl rounded-2xl border transition-all duration-300 overflow-hidden ${
+                    openIndex === index
+                      ? "border-cyan-500/50 shadow-lg shadow-cyan-500/10"
+                      : "border-gray-800 hover:border-gray-700"
+                  }`}
+                >
+                  {/* Glassmorphism effect */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                  <button
+                    onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                    className="relative w-full text-left p-6 flex items-center justify-between gap-4"
+                  >
+                    <span className="text-lg font-medium text-white group-hover:text-cyan-400 transition-colors">
+                      {faq.question}
+                    </span>
+                    <motion.div
+                      animate={{ rotate: openIndex === index ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex-shrink-0 w-8 h-8 bg-cyan-500/10 rounded-lg flex items-center justify-center"
+                    >
+                      <svg
+                        className="w-5 h-5 text-cyan-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </motion.div>
+                  </button>
+
+                  <AnimatePresence>
+                    {openIndex === index && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                      >
+                        <div className="px-6 pb-6">
+                          <div className="pt-2 border-t border-gray-800">
+                            <p className="text-gray-400 leading-relaxed pt-4">
+                              {faq.answer}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        )}
 
         <ScrollReveal delay={0.4}>
           <div className="mt-12 text-center">
