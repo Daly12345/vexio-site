@@ -145,22 +145,44 @@ export default function ContactWizard() {
       return { plan: result, reason };
     }
 
-    // Calcular plan mínimo requerido por features
+    // Calcular plan mínimo requerido por TODAS las features seleccionadas
     let featurePlan: keyof typeof plans = "micro";
     let mainFeature = "";
+    let featurePlanIndex = 0;
 
+    // Evaluar CADA feature y quedarse con la que requiere el plan más alto
     if (features.includes("multilang")) {
-      featurePlan = "premium";
-      mainFeature = "multilang";
-    } else if (features.includes("blog")) {
-      featurePlan = features.length > 1 ? "premium" : "profesional";
-      mainFeature = "blog";
-    } else if (features.includes("booking")) {
-      featurePlan = "profesional";
-      mainFeature = "booking";
-    } else if (features.includes("menu")) {
-      featurePlan = "basico";
-      mainFeature = "menu";
+      const idx = planOrder.indexOf("premium");
+      if (idx > featurePlanIndex) {
+        featurePlanIndex = idx;
+        featurePlan = "premium";
+        mainFeature = "multilang";
+      }
+    }
+    if (features.includes("blog")) {
+      const blogPlan = features.length > 1 ? "premium" : "profesional";
+      const idx = planOrder.indexOf(blogPlan);
+      if (idx > featurePlanIndex) {
+        featurePlanIndex = idx;
+        featurePlan = blogPlan;
+        mainFeature = "blog";
+      }
+    }
+    if (features.includes("booking")) {
+      const idx = planOrder.indexOf("profesional");
+      if (idx > featurePlanIndex) {
+        featurePlanIndex = idx;
+        featurePlan = "profesional";
+        mainFeature = "booking";
+      }
+    }
+    if (features.includes("menu")) {
+      const idx = planOrder.indexOf("basico");
+      if (idx > featurePlanIndex) {
+        featurePlanIndex = idx;
+        featurePlan = "basico";
+        mainFeature = "menu";
+      }
     }
 
     // ========== PASO 3: Tomar el MAYOR entre basePlan y featurePlan ==========
