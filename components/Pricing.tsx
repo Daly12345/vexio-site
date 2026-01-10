@@ -158,17 +158,17 @@ export default function Pricing() {
                   }`} />
 
                   <div className="relative p-6 md:p-8 flex flex-col h-full">
-                    {/* Popular badge */}
-                    {plan.popular && (
-                      <div className="mb-4 -mt-1">
+                    {/* Popular badge - altura fija para alinear todas las tarjetas */}
+                    <div className="h-7 mb-4">
+                      {plan.popular && (
                         <span className="inline-block bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
                           Más Popular
                         </span>
-                      </div>
-                    )}
+                      )}
+                    </div>
 
                     {/* Plan name */}
-                    <div className={plan.popular ? 'mb-6' : 'mb-6 mt-6'}>
+                    <div className="mb-6">
                       <h3 className={`text-2xl font-bold mb-2 transition-colors duration-300 ${
                         highlighted ? 'text-cyan-400' : 'text-white'
                       }`}>{plan.name}</h3>
