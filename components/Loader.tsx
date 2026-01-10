@@ -9,10 +9,10 @@ export default function Loader() {
     // Force scroll to top on page load
     window.scrollTo(0, 0);
 
-    // Minimal loader - 200ms to avoid CLS
+    // Minimal loader - 50ms just to ensure scroll to top
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 200);
+    }, 50);
 
     return () => {
       clearTimeout(timer);
@@ -23,8 +23,8 @@ export default function Loader() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black transition-opacity duration-200"
-      style={{ opacity: isLoading ? 1 : 0 }}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black"
+      style={{ opacity: isLoading ? 1 : 0, transition: "opacity 100ms ease-out" }}
     >
       <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500">
         Vexio

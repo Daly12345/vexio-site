@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import dynamic from "next/dynamic";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import SmoothScroll from "@/components/SmoothScroll";
-import CustomCursor from "@/components/CustomCursor";
-import ScrollProgress from "@/components/ScrollProgress";
-import BackToTop from "@/components/BackToTop";
+
+// Dynamic imports for non-critical components to improve LCP
+const SmoothScroll = dynamic(() => import("@/components/SmoothScroll"), { ssr: false });
+const CustomCursor = dynamic(() => import("@/components/CustomCursor"), { ssr: false });
+const ScrollProgress = dynamic(() => import("@/components/ScrollProgress"), { ssr: false });
+const BackToTop = dynamic(() => import("@/components/BackToTop"), { ssr: false });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
