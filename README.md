@@ -1,36 +1,157 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vexio - Sitio Web Profesional
 
-## Getting Started
+Sitio web profesional para Vexio, empresa de soluciones digitales en México.
 
-First, run the development server:
+## Stack Tecnológico
+
+- **Next.js 16** - Framework de React
+- **TypeScript** - Tipado estático
+- **Tailwind CSS** - Estilos y diseño
+- **React** - Biblioteca de UI
+
+## Características
+
+### Secciones Implementadas
+
+1. **Hero** - Página de inicio con llamado a la acción principal
+2. **Servicios** - Páginas web, E-commerce, SEO y Mantenimiento
+3. **Precios** - 5 planes detallados (Micro, Básico, Profesional, Premium, E-commerce)
+4. **Portafolio** - Galería de proyectos (con placeholders)
+5. **Contacto** - Formulario de contacto integrado con WhatsApp
+6. **Navegación** - Menu responsive con enlaces a secciones
+7. **Footer** - Información de contacto y enlaces
+
+### Diseño
+
+- Tema oscuro profesional
+- Acentos en cyan/azul (#06b6d4, #22d3ee)
+- Totalmente responsive (mobile, tablet, desktop)
+- Animaciones y transiciones suaves
+- Optimizado para conversión
+
+## Instalación y Uso
+
+### Requisitos Previos
+
+- Node.js 18+ instalado
+- npm o yarn
+
+### Instalar Dependencias
+
+```bash
+npm install
+```
+
+### Ejecutar en Desarrollo
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+El sitio estará disponible en [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Compilar para Producción
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+### Ejecutar en Producción
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Personalización
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Configurar WhatsApp
 
-## Deploy on Vercel
+Actualiza el número de WhatsApp en todos los componentes:
+- `components/Navbar.tsx`
+- `components/Hero.tsx`
+- `components/Pricing.tsx`
+- `components/Contact.tsx`
+- `components/Footer.tsx`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Busca: `https://wa.me/5215512345678` y reemplaza con tu número real.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Modificar Contenido
+
+- **Servicios**: Edita `components/Services.tsx`
+- **Precios**: Edita `components/Pricing.tsx`
+- **Portafolio**: Edita `components/Portfolio.tsx` y agrega imágenes reales en `/public`
+- **Contacto**: Edita `components/Contact.tsx`
+
+### Cambiar Colores
+
+Modifica `app/globals.css`:
+```css
+:root {
+  --primary: #06b6d4;        /* Color principal */
+  --primary-dark: #0891b2;   /* Color principal oscuro */
+  --accent: #22d3ee;         /* Color de acento */
+}
+```
+
+## Estructura del Proyecto
+
+```
+vexio-site/
+├── app/
+│   ├── globals.css         # Estilos globales
+│   ├── layout.tsx          # Layout principal
+│   └── page.tsx            # Página principal
+├── components/
+│   ├── Navbar.tsx          # Navegación
+│   ├── Hero.tsx            # Sección hero
+│   ├── Services.tsx        # Servicios
+│   ├── Pricing.tsx         # Planes de precios
+│   ├── Portfolio.tsx       # Portafolio
+│   ├── Contact.tsx         # Contacto
+│   └── Footer.tsx          # Footer
+├── public/                 # Archivos estáticos
+└── package.json
+```
+
+## Próximos Pasos Recomendados
+
+1. **Configurar dominio vexio.mx**
+   - Comprar dominio si aún no lo tienes
+   - Configurar DNS
+
+2. **Agregar imágenes reales**
+   - Reemplazar placeholders en portafolio
+   - Agregar logo de Vexio
+
+3. **Desplegar a producción**
+   - Vercel (recomendado para Next.js)
+   - Netlify
+   - Otro hosting
+
+4. **Configurar Analytics**
+   - Google Analytics
+   - Facebook Pixel
+
+5. **SEO adicional**
+   - Agregar sitemap.xml
+   - Configurar robots.txt
+   - Optimizar meta tags
+
+## Comandos Útiles
+
+```bash
+npm run dev          # Desarrollo
+npm run build        # Compilar
+npm start            # Producción
+npm run lint         # Verificar código
+```
+
+## Soporte
+
+Para preguntas o soporte:
+- Email: contacto@vexio.mx
+- WhatsApp: +52 55 1234 5678
+
+## Licencia
+
+Propietario: Vexio © 2026
