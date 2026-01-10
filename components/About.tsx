@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import ScrollReveal from "./animations/ScrollReveal";
 
 const skills = [
@@ -50,7 +50,7 @@ const values = [
   },
 ];
 
-function SkillBar({ skill, index }: { skill: (typeof skills)[0]; index: number }) {
+function SkillBar({ skill, index, isMobile }: { skill: (typeof skills)[0]; index: number; isMobile: boolean }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
@@ -61,12 +61,19 @@ function SkillBar({ skill, index }: { skill: (typeof skills)[0]; index: number }
         <span className="text-cyan-400">{skill.level}%</span>
       </div>
       <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-        <motion.div
-          className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
-          initial={{ width: 0 }}
-          animate={isInView ? { width: `${skill.level}%` } : {}}
-          transition={{ duration: 1, delay: index * 0.1, ease: "easeOut" }}
-        />
+        {isMobile ? (
+          <div
+            className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
+            style={{ width: `${skill.level}%` }}
+          />
+        ) : (
+          <motion.div
+            className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
+            initial={{ width: 0 }}
+            animate={isInView ? { width: `${skill.level}%` } : {}}
+            transition={{ duration: 1, delay: index * 0.1, ease: "easeOut" }}
+          />
+        )}
       </div>
     </div>
   );
@@ -75,6 +82,11 @@ function SkillBar({ skill, index }: { skill: (typeof skills)[0]; index: number }
 export default function About() {
   const counterRef = useRef(null);
   const counterInView = useInView(counterRef, { once: true });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
 
   return (
     <section id="nosotros" className="relative py-24 bg-black overflow-hidden">
@@ -114,7 +126,7 @@ export default function About() {
               <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-xl rounded-2xl border border-gray-800 p-6">
                 <h3 className="text-lg font-semibold text-white mb-6">Nuestras Especialidades</h3>
                 {skills.map((skill, index) => (
-                  <SkillBar key={skill.name} skill={skill} index={index} />
+                  <SkillBar key={skill.name} skill={skill} index={index} isMobile={isMobile} />
                 ))}
               </div>
             </ScrollReveal>
