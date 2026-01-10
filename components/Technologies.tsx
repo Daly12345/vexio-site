@@ -155,19 +155,25 @@ export default function Technologies() {
         {/* Mobile: Static grid (no animation) */}
         {isMobile ? (
           <div className="grid grid-cols-4 gap-4">
-            {technologies.slice(0, 8).map((tech) => (
-              <div
-                key={tech.name}
-                className="flex flex-col items-center justify-center p-3 bg-gray-900/80 border border-gray-800 rounded-xl"
-              >
-                <div style={{ color: tech.color }}>
-                  {tech.icon}
+            {technologies.slice(0, 8).map((tech) => {
+              const isAdaptiveIcon = tech.color === "#ffffff";
+              return (
+                <div
+                  key={tech.name}
+                  className="flex flex-col items-center justify-center p-3 bg-gray-900/80 border border-gray-800 rounded-xl"
+                >
+                  <div
+                    className={isAdaptiveIcon ? "tech-icon-adaptive" : ""}
+                    style={isAdaptiveIcon ? undefined : { color: tech.color }}
+                  >
+                    {tech.icon}
+                  </div>
+                  <p className="mt-1 text-[10px] text-gray-400 font-medium text-center">
+                    {tech.name}
+                  </p>
                 </div>
-                <p className="mt-1 text-[10px] text-gray-400 font-medium text-center">
-                  {tech.name}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           /* Desktop: Animated marquee */
@@ -191,34 +197,40 @@ export default function Technologies() {
                   },
                 }}
               >
-                {duplicatedTechnologies.map((tech, index) => (
-                  <motion.div
-                    key={`${tech.name}-${index}`}
-                    className="flex-shrink-0 group"
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 400 }}
-                  >
-                    <div className="relative flex flex-col items-center justify-center w-24 h-24 bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl transition-all duration-300 group-hover:border-cyan-500/50 group-hover:bg-gray-800/50">
-                      {/* Glow effect on hover */}
-                      <div
-                        className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"
-                        style={{ backgroundColor: tech.color }}
-                      />
+                {duplicatedTechnologies.map((tech, index) => {
+                  const isAdaptiveIcon = tech.color === "#ffffff";
+                  return (
+                    <motion.div
+                      key={`${tech.name}-${index}`}
+                      className="flex-shrink-0 group"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ type: "spring", stiffness: 400 }}
+                    >
+                      <div className="relative flex flex-col items-center justify-center w-24 h-24 bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl transition-all duration-300 group-hover:border-cyan-500/50 group-hover:bg-gray-800/50">
+                        {/* Glow effect on hover */}
+                        <div
+                          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+                          style={{ backgroundColor: tech.color }}
+                        />
 
-                      {/* Icon */}
-                      <div className="relative text-gray-400 group-hover:text-white transition-colors duration-300">
-                        <div className="group-hover:scale-110 transition-transform duration-300" style={{ color: tech.color }}>
-                          {tech.icon}
+                        {/* Icon */}
+                        <div className="relative text-gray-400 group-hover:text-white transition-colors duration-300">
+                          <div
+                            className={`group-hover:scale-110 transition-transform duration-300 ${isAdaptiveIcon ? "tech-icon-adaptive" : ""}`}
+                            style={isAdaptiveIcon ? undefined : { color: tech.color }}
+                          >
+                            {tech.icon}
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Name */}
-                      <p className="mt-2 text-xs text-gray-500 group-hover:text-gray-300 transition-colors duration-300 font-medium">
-                        {tech.name}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
+                        {/* Name */}
+                        <p className="mt-2 text-xs text-gray-500 group-hover:text-gray-300 transition-colors duration-300 font-medium">
+                          {tech.name}
+                        </p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </motion.div>
             </div>
           </div>
