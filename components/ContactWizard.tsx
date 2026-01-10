@@ -104,90 +104,96 @@ export default function ContactWizard() {
     // Orden de planes de menor a mayor
     const planOrder: (keyof typeof plans)[] = ["micro", "basico", "profesional", "premium", "ecommerce"];
 
-    // Si necesita e-commerce, directamente ese plan
+    // ========== REGLA 1: E-commerce siempre es e-commerce ==========
     if (features.includes("ecommerce")) {
-      return "ecommerce";
+      return applyBudgetLimit("ecommerce", budget, planOrder);
     }
 
-    // Calcular plan base según número de páginas
-    let basePlan: keyof typeof plans = "micro";
+    // ========== REGLA 2: Features que REQUIEREN cierto plan mínimo ==========
 
-    if (pages === "landing") {
-      basePlan = "micro";
-    } else if (pages === "small") {
-      basePlan = "basico";
-    } else if (pages === "medium") {
-      basePlan = "profesional";
-    } else if (pages === "large") {
-      basePlan = "premium";
+    // Bilingüe SIEMPRE requiere Premium (es doble trabajo de contenido)
+    if (features.includes("multilang")) {
+      return applyBudgetLimit("premium", budget, planOrder);
     }
 
-    // Si solo necesita info básica, quedarse con el plan base
-    if (features.includes("none") || features.length === 0) {
-      return adjustByBudget(basePlan, budget, planOrder);
+    // Blog completo requiere Premium (necesita CMS, categorías, etc.)
+    // EXCEPTO si es lo único que piden con pocas páginas
+    if (features.includes("blog")) {
+      if (pages === "large" || features.length > 1) {
+        return applyBudgetLimit("premium", budget, planOrder);
+      }
+      // Blog simple con sitio pequeño = Profesional
+      return applyBudgetLimit("profesional", budget, planOrder);
     }
 
-    // Caso especial: Landing + solo menú digital = Básico (un menú puede ser 1 página)
-    if (pages === "landing" && features.length === 1 && features.includes("menu")) {
-      return adjustByBudget("basico", budget, planOrder);
+    // Sistema de citas/reservaciones requiere Profesional mínimo
+    if (features.includes("booking")) {
+      // Si también tiene muchas páginas, podría ser Premium
+      if (pages === "large") {
+        return applyBudgetLimit("premium", budget, planOrder);
+      }
+      return applyBudgetLimit("profesional", budget, planOrder);
     }
 
-    // Caso especial: Landing o pequeño + solo una feature simple = Básico
-    if ((pages === "landing" || pages === "small") && features.length === 1) {
-      if (features.includes("menu") || features.includes("blog")) {
-        return adjustByBudget("basico", budget, planOrder);
+    // ========== REGLA 3: Menú digital - depende del contexto ==========
+    if (features.includes("menu")) {
+      // Menú digital con muchas páginas = Profesional
+      if (pages === "medium" || pages === "large") {
+        return applyBudgetLimit("profesional", budget, planOrder);
+      }
+      // Menú digital con 2-5 páginas = Básico (menú en una sección)
+      if (pages === "small") {
+        return applyBudgetLimit("basico", budget, planOrder);
+      }
+      // Menú digital solo (1 página) = Básico (es más que una landing simple)
+      if (pages === "landing") {
+        return applyBudgetLimit("basico", budget, planOrder);
       }
     }
 
-    // Calcular "puntos" de features para subir de plan
-    let featurePoints = 0;
-
-    // Solo sumar puntos si hay múltiples features o features complejas
-    if (features.includes("menu") && features.length > 1) featurePoints += 1;  // Menú + otras cosas
-    if (features.includes("booking")) featurePoints += 2;     // Reservaciones (más complejo)
-    if (features.includes("multilang")) featurePoints += 2;   // Bilingüe (más trabajo)
-    if (features.includes("blog") && features.length > 1) featurePoints += 1;  // Blog + otras cosas
-
-    // Subir de plan según puntos de features
-    let recommendedIndex = planOrder.indexOf(basePlan);
-
-    if (featurePoints >= 4) {
-      recommendedIndex = Math.min(recommendedIndex + 2, 3); // Subir hasta Premium máximo
-    } else if (featurePoints >= 2) {
-      recommendedIndex = Math.min(recommendedIndex + 1, 3); // Subir 1 nivel
+    // ========== REGLA 4: Solo info básica - basarse en páginas ==========
+    if (features.includes("none") || features.length === 0) {
+      if (pages === "landing") return applyBudgetLimit("micro", budget, planOrder);
+      if (pages === "small") return applyBudgetLimit("basico", budget, planOrder);
+      if (pages === "medium") return applyBudgetLimit("profesional", budget, planOrder);
+      if (pages === "large") return applyBudgetLimit("premium", budget, planOrder);
     }
 
-    let recommended = planOrder[recommendedIndex];
+    // ========== REGLA 5: Por defecto basarse en número de páginas ==========
+    if (pages === "landing") return applyBudgetLimit("micro", budget, planOrder);
+    if (pages === "small") return applyBudgetLimit("basico", budget, planOrder);
+    if (pages === "medium") return applyBudgetLimit("profesional", budget, planOrder);
+    if (pages === "large") return applyBudgetLimit("premium", budget, planOrder);
 
-    // Ajustar por presupuesto
-    return adjustByBudget(recommended, budget, planOrder);
+    // Fallback
+    return applyBudgetLimit("basico", budget, planOrder);
   };
 
-  // Función para ajustar recomendación según presupuesto
-  const adjustByBudget = (
-    plan: keyof typeof plans,
+  // Función para limitar por presupuesto (no recomendar más de lo que pueden pagar)
+  const applyBudgetLimit = (
+    idealPlan: keyof typeof plans,
     budget: string,
     planOrder: (keyof typeof plans)[]
   ): keyof typeof plans => {
-    // Mapear presupuesto a plan máximo permitido
+    // Mapear presupuesto a plan máximo que pueden pagar
     const budgetMaxPlan: Record<string, keyof typeof plans> = {
-      "low": "micro",           // Menos de $5,000 → máximo Micro
-      "medium": "profesional",  // $5,000 - $15,000 → hasta Profesional
-      "high": "premium",        // $15,000 - $30,000 → hasta Premium
-      "premium": "ecommerce",   // Más de $30,000 → cualquier plan
-      "flexible": "ecommerce"   // Flexible → cualquier plan
+      "low": "micro",           // Menos de $5,000 → solo alcanza Micro
+      "medium": "profesional",  // $5,000 - $15,000 → alcanza hasta Profesional
+      "high": "premium",        // $15,000 - $30,000 → alcanza hasta Premium
+      "premium": "ecommerce",   // Más de $30,000 → alcanza todo
+      "flexible": "ecommerce"   // Flexible → no limitar
     };
 
     const maxPlan = budgetMaxPlan[budget] || "ecommerce";
-    const planIndex = planOrder.indexOf(plan);
+    const idealIndex = planOrder.indexOf(idealPlan);
     const maxIndex = planOrder.indexOf(maxPlan);
 
-    // Si el plan recomendado excede el presupuesto, bajar al máximo permitido
-    if (planIndex > maxIndex) {
+    // Si el plan ideal cuesta más de lo que pueden pagar, dar el máximo que alcanza
+    if (idealIndex > maxIndex) {
       return planOrder[maxIndex];
     }
 
-    return plan;
+    return idealPlan;
   };
 
   const handleNext = () => {
