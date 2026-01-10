@@ -3,32 +3,24 @@
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
-export default function CustomCursor() {
+// Separate component for desktop cursor to avoid hooks on mobile
+function DesktopCursor() {
   const [isHovering, setIsHovering] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [isMobile, setIsMobile] = useState(true);
 
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
-  // Outer ring - follows quickly but with slight smoothing
   const springConfig = { damping: 30, stiffness: 450 };
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
-  // Inner dot - follows almost instantly
   const dotSpringConfig = { damping: 40, stiffness: 600 };
   const dotXSpring = useSpring(cursorX, dotSpringConfig);
   const dotYSpring = useSpring(cursorY, dotSpringConfig);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768 || "ontouchstart" in window);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-
     const moveCursor = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
@@ -52,13 +44,8 @@ export default function CustomCursor() {
       }
     };
 
-    const handleMouseLeave = () => {
-      setIsHovering(false);
-    };
-
-    const handleMouseOut = () => {
-      setIsVisible(false);
-    };
+    const handleMouseLeave = () => setIsHovering(false);
+    const handleMouseOut = () => setIsVisible(false);
 
     window.addEventListener("mousemove", moveCursor);
     window.addEventListener("mouseover", handleMouseEnter);
@@ -74,21 +61,14 @@ export default function CustomCursor() {
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
       document.removeEventListener("mouseleave", handleMouseOut);
-      window.removeEventListener("resize", checkMobile);
     };
   }, [cursorX, cursorY]);
 
-  if (isMobile) return null;
-
   return (
     <>
-      {/* Main cursor dot - follows faster */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[9999]"
-        style={{
-          x: dotXSpring,
-          y: dotYSpring,
-        }}
+        style={{ x: dotXSpring, y: dotYSpring }}
       >
         <motion.div
           className="relative -translate-x-1/2 -translate-y-1/2"
@@ -102,13 +82,9 @@ export default function CustomCursor() {
         </motion.div>
       </motion.div>
 
-      {/* Outer ring - follows with delay */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[9998]"
-        style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-        }}
+        style={{ x: cursorXSpring, y: cursorYSpring }}
       >
         <motion.div
           className="relative -translate-x-1/2 -translate-y-1/2"
@@ -120,22 +96,16 @@ export default function CustomCursor() {
         >
           <div
             className={`w-10 h-10 rounded-full border-2 transition-colors duration-200 ${
-              isHovering
-                ? "border-cyan-400 bg-cyan-400/20"
-                : "border-cyan-400/50"
+              isHovering ? "border-cyan-400 bg-cyan-400/20" : "border-cyan-400/50"
             }`}
           />
         </motion.div>
       </motion.div>
 
-      {/* Glow effect on hover */}
       {isHovering && (
         <motion.div
           className="fixed top-0 left-0 pointer-events-none z-[9997]"
-          style={{
-            x: cursorXSpring,
-            y: cursorYSpring,
-          }}
+          style={{ x: cursorXSpring, y: cursorYSpring }}
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 0.3 }}
           exit={{ scale: 0, opacity: 0 }}
@@ -146,4 +116,17 @@ export default function CustomCursor() {
       )}
     </>
   );
+}
+
+export default function CustomCursor() {
+  const [isMobile, setIsMobile] = useState(true); // Default true for SSR
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768 || "ontouchstart" in window);
+  }, []);
+
+  // Don't render anything on mobile - no hooks executed
+  if (isMobile) return null;
+
+  return <DesktopCursor />;
 }

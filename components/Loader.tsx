@@ -3,15 +3,42 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
-export default function Loader() {
+// Mobile loader - simple CSS fade
+function MobileLoader() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Force scroll to top on page load
     window.scrollTo(0, 0);
     document.body.style.overflow = "hidden";
 
-    // Quick loader - 400ms
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      document.body.style.overflow = "unset";
+    }, 300);
+
+    return () => {
+      clearTimeout(timer);
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
+  if (!isLoading) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black">
+      <h1 className="text-5xl font-bold text-cyan-400">Vexio</h1>
+    </div>
+  );
+}
+
+// Desktop loader with animations
+function DesktopLoader() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.body.style.overflow = "hidden";
+
     const timer = setTimeout(() => {
       setIsLoading(false);
       document.body.style.overflow = "unset";
@@ -32,7 +59,6 @@ export default function Loader() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
         >
-          {/* Logo */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -47,4 +73,14 @@ export default function Loader() {
       )}
     </AnimatePresence>
   );
+}
+
+export default function Loader() {
+  const [isMobile, setIsMobile] = useState(true);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 1024);
+  }, []);
+
+  return isMobile ? <MobileLoader /> : <DesktopLoader />;
 }

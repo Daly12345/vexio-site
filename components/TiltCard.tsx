@@ -11,7 +11,13 @@ interface TiltCardProps {
   scale?: number;
 }
 
-export default function TiltCard({
+// Mobile version - just a static div
+function MobileTiltCard({ children, className = "" }: TiltCardProps) {
+  return <div className={className}>{children}</div>;
+}
+
+// Desktop version with tilt effect
+function DesktopTiltCard({
   children,
   className = "",
   tiltAmount = 10,
@@ -23,20 +29,9 @@ export default function TiltCard({
   const [rotateY, setRotateY] = useState(0);
   const [glarePosition, setGlarePosition] = useState({ x: 50, y: 50 });
   const [isHovering, setIsHovering] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Detect mobile/touch device
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024 || 'ontouchstart' in window);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current || isMobile) return;
+    if (!ref.current) return;
 
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -51,7 +46,6 @@ export default function TiltCard({
     setRotateX(rotateXValue);
     setRotateY(rotateYValue);
 
-    // Calculate glare position
     const glareX = ((e.clientX - rect.left) / rect.width) * 100;
     const glareY = ((e.clientY - rect.top) / rect.height) * 100;
     setGlarePosition({ x: glareX, y: glareY });
@@ -91,8 +85,7 @@ export default function TiltCard({
     >
       {children}
 
-      {/* Glare effect - disabled on mobile */}
-      {glareEnabled && !isMobile && (
+      {glareEnabled && (
         <motion.div
           className="absolute inset-0 pointer-events-none rounded-[inherit] overflow-hidden"
           animate={{
@@ -110,4 +103,14 @@ export default function TiltCard({
       )}
     </motion.div>
   );
+}
+
+export default function TiltCard(props: TiltCardProps) {
+  const [isMobile, setIsMobile] = useState(true);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 1024);
+  }, []);
+
+  return isMobile ? <MobileTiltCard {...props} /> : <DesktopTiltCard {...props} />;
 }

@@ -90,6 +90,27 @@
   }
 }
 
+@keyframes skill-bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Skill bar animation - lightweight CSS only */
+.animate-skill-bar {
+  transform-origin: left;
+  animation: skill-bar-grow 0.8s ease-out forwards;
+  animation-delay: var(--animation-delay, 0s);
+}
+
+/* Skill bar gradient - preserved on all devices */
+.skill-bar-gradient {
+  background: linear-gradient(to right, #06b6d4, #3b82f6) !important;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -334,49 +355,105 @@ html.lenis, html.lenis body {
   color: inherit;
 }
 
-/* ===== MOBILE PERFORMANCE OPTIMIZATIONS ===== */
+/* ===== MOBILE PERFORMANCE OPTIMIZATIONS - ULTRA AGGRESSIVE ===== */
 @media (max-width: 1023px) {
-  /* Disable backdrop-blur on mobile - very expensive */
+  /* Disable ALL blur effects */
   .backdrop-blur-xl,
   .backdrop-blur-lg,
   .backdrop-blur-md,
   .backdrop-blur-sm,
-  .backdrop-blur {
+  .backdrop-blur,
+  [class*="backdrop-blur"] {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+  }
+
+  /* COMPLETELY HIDE decorative blur elements */
+  .blur-3xl,
+  .blur-2xl,
+  .blur-xl,
+  .blur-lg,
+  .blur-md,
+  .blur-sm,
+  .blur,
+  [class*="blur-"] {
+    display: none !important;
+    visibility: hidden !important;
   }
 
   .glass,
   .glass-card {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    background: rgba(17, 17, 17, 0.95) !important;
+    background: #111111 !important;
   }
 
-  /* Reduce blur intensity on decorative elements */
-  .blur-3xl {
-    filter: blur(40px) !important;
-  }
-
-  .blur-2xl {
-    filter: blur(25px) !important;
-  }
-
-  .blur-xl {
-    filter: blur(15px) !important;
-  }
-
-  /* Disable complex animations */
-  .animate-pulse,
-  .animate-spin-slow {
+  /* Disable ALL CSS animations */
+  *,
+  *::before,
+  *::after {
     animation: none !important;
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition: none !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
   }
 
-  /* Reduce gradient animation complexity */
-  .animate-gradient,
-  .text-gradient-animated {
-    animation: none !important;
-    background-size: 100% 100% !important;
+  /* EXCEPTION: Allow skill bar animation - it's lightweight CSS transform */
+  .animate-skill-bar {
+    animation: skill-bar-grow 0.8s ease-out forwards !important;
+    animation-delay: var(--animation-delay, 0s) !important;
+  }
+
+  /* Simplify gradients to solid colors */
+  .bg-gradient-to-b,
+  .bg-gradient-to-r,
+  .bg-gradient-to-br,
+  .bg-gradient-to-tr,
+  .bg-gradient-to-bl,
+  .bg-gradient-to-tl {
+    background: #0a0a0a !important;
+  }
+
+  /* Hide grid pattern */
+  .bg-grid-pattern {
+    display: none !important;
+  }
+
+  /* Remove ALL shadows */
+  .shadow-lg,
+  .shadow-xl,
+  .shadow-2xl,
+  .shadow-md,
+  .shadow-sm,
+  .shadow,
+  [class*="shadow-"] {
+    box-shadow: none !important;
+  }
+
+  /* Remove hover effects */
+  .hover-lift:hover {
+    transform: none !important;
+  }
+
+  /* Remove glow effects */
+  .glow,
+  .glow-hover:hover {
+    box-shadow: none !important;
+  }
+
+  /* Disable will-change */
+  * {
+    will-change: auto !important;
+  }
+
+  /* Disable filter effects */
+  [class*="filter"],
+  [class*="brightness"],
+  [class*="contrast"],
+  [class*="saturate"] {
+    filter: none !important;
   }
 }
 

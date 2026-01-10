@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef, ReactNode } from "react";
+import { useRef, ReactNode, useState, useEffect, createContext, useContext } from "react";
 
 interface StaggerContainerProps {
   children: ReactNode;
@@ -10,7 +10,20 @@ interface StaggerContainerProps {
   once?: boolean;
 }
 
-export default function StaggerContainer({
+// Context to pass mobile state to children
+const MobileContext = createContext(true);
+
+// Mobile version - completely static
+function MobileStaggerContainer({ children, className = "" }: StaggerContainerProps) {
+  return (
+    <MobileContext.Provider value={true}>
+      <div className={className}>{children}</div>
+    </MobileContext.Provider>
+  );
+}
+
+// Desktop version with animations
+function DesktopStaggerContainer({
   children,
   className = "",
   staggerDelay = 0.1,
@@ -20,23 +33,35 @@ export default function StaggerContainer({
   const isInView = useInView(ref, { once, margin: "-50px" });
 
   return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      variants={{
-        hidden: {},
-        visible: {
-          transition: {
-            staggerChildren: staggerDelay,
+    <MobileContext.Provider value={false}>
+      <motion.div
+        ref={ref}
+        className={className}
+        initial="hidden"
+        animate={isInView ? "visible" : "hidden"}
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: staggerDelay,
+            },
           },
-        },
-      }}
-    >
-      {children}
-    </motion.div>
+        }}
+      >
+        {children}
+      </motion.div>
+    </MobileContext.Provider>
   );
+}
+
+export default function StaggerContainer(props: StaggerContainerProps) {
+  const [isMobile, setIsMobile] = useState(true);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 1024);
+  }, []);
+
+  return isMobile ? <MobileStaggerContainer {...props} /> : <DesktopStaggerContainer {...props} />;
 }
 
 export function StaggerItem({
@@ -46,6 +71,13 @@ export function StaggerItem({
   children: ReactNode;
   className?: string;
 }) {
+  const isMobile = useContext(MobileContext);
+
+  // On mobile, just render a plain div
+  if (isMobile) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       className={className}
@@ -56,7 +88,7 @@ export function StaggerItem({
           y: 0,
           transition: {
             duration: 0.5,
-            ease: [0.25, 0.4, 0.25, 1],
+            ease: "easeOut",
           },
         },
       }}
