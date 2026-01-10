@@ -733,6 +733,12 @@ html.lenis, html.lenis body {
   color: #0f172a !important;
 }
 
+/* Technologies mobile cards */
+[data-theme="light"] .bg-gray-900\/80.border.border-gray-800.rounded-xl {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: #e2e8f0 !important;
+}
+
 /* ===== Cards Light Mode Fixes ===== */
 
 /* About, FAQ, and general cards with gray-900/gray-800 gradients */
