@@ -16,6 +16,8 @@ const plans = {
     name: "Micro",
     price: "$3,500",
     priceRange: "$3,500 - $4,500 MXN",
+    minPrice: 3500,
+    maxPrice: 4500,
     description: "Landing page perfecta para negocios locales que quieren presencia online básica.",
     features: ["1 página", "Diseño responsivo", "WhatsApp integrado", "Google Maps", "Hosting + Dominio 1 año"],
     delivery: "3-5 días"
@@ -24,6 +26,8 @@ const plans = {
     name: "Básico",
     price: "$5,500",
     priceRange: "$5,500 - $8,000 MXN",
+    minPrice: 5500,
+    maxPrice: 8000,
     description: "Sitio web completo para negocios que necesitan más secciones.",
     features: ["3-5 páginas", "Formulario de contacto", "Galería de fotos", "SSL incluido", "Hosting + Dominio 1 año"],
     delivery: "5-7 días"
@@ -32,6 +36,8 @@ const plans = {
     name: "Profesional",
     price: "$9,000",
     priceRange: "$9,000 - $15,000 MXN",
+    minPrice: 9000,
+    maxPrice: 15000,
     description: "Ideal para negocios que necesitan funcionalidades avanzadas.",
     features: ["5-7 páginas", "Menú digital o catálogo", "SEO básico", "Sistema de citas", "3 correos corporativos"],
     delivery: "10-15 días"
@@ -40,6 +46,8 @@ const plans = {
     name: "Premium",
     price: "$16,000",
     priceRange: "$16,000 - $25,000 MXN",
+    minPrice: 16000,
+    maxPrice: 25000,
     description: "Solución completa para negocios que buscan destacar.",
     features: ["8-12 páginas", "Reservaciones con calendario", "Versión en inglés", "Blog", "SEO avanzado"],
     delivery: "15-25 días"
@@ -48,6 +56,8 @@ const plans = {
     name: "E-commerce",
     price: "$25,000",
     priceRange: "$25,000 - $40,000 MXN",
+    minPrice: 25000,
+    maxPrice: 40000,
     description: "Tienda en línea completa para vender tus productos.",
     features: ["Tienda online", "Hasta 100 productos", "Pasarela de pago", "Inventario", "Dashboard de ventas"],
     delivery: "20-30 días"
@@ -66,6 +76,7 @@ export default function ContactWizard() {
   const [idealPlan, setIdealPlan] = useState<keyof typeof plans | null>(null);
   const [recommendationReason, setRecommendationReason] = useState<string>("");
   const [missingFeatures, setMissingFeatures] = useState<string[]>([]);
+  const [estimatedPrice, setEstimatedPrice] = useState<number>(0);
 
   const businessTypes = [
     { id: "food", label: "Restaurante / Cafetería / Comida", icon: "🍽️" },
@@ -106,8 +117,9 @@ export default function ContactWizard() {
     ideal: keyof typeof plans;
     reason: string;
     missing: string[];
+    price: number;
   } => {
-    const { pages, features, budget } = answers;
+    const { businessType, pages, features, budget } = answers;
 
     const planOrder: (keyof typeof plans)[] = ["micro", "basico", "profesional", "premium", "ecommerce"];
 
@@ -136,6 +148,51 @@ export default function ContactWizard() {
       ecommerce: ["menu", "booking", "multilang", "blog", "ecommerce"]
     };
 
+    // Función para calcular precio estimado dentro del rango
+    const calculateEstimatedPrice = (planKey: keyof typeof plans): number => {
+      const plan = plans[planKey];
+      const range = plan.maxPrice - plan.minPrice;
+      let priceModifier = 0; // 0 a 1 (porcentaje del rango a añadir)
+
+      // Factor 1: Páginas (0-35% del rango)
+      // Si piden más páginas de las que el plan normalmente maneja
+      const pageWeight: Record<string, number> = {
+        landing: 0,
+        small: 0.15,
+        medium: 0.25,
+        large: 0.35
+      };
+      priceModifier += pageWeight[pages] || 0;
+
+      // Factor 2: Cantidad de features seleccionadas (0-40% del rango)
+      const selectedFeatures = features.filter(f => f !== "none");
+      const includedFeatures = planFeatures[planKey];
+      const extraFeatures = selectedFeatures.filter(f => !includedFeatures.includes(f)).length;
+      priceModifier += Math.min(extraFeatures * 0.15, 0.40);
+
+      // Factor 3: Complejidad del negocio (0-25% del rango)
+      const businessComplexity: Record<string, number> = {
+        food: 0.10,       // Restaurantes: menús, fotos de platillos
+        health: 0.15,     // Consultorios: citas, formularios médicos
+        beauty: 0.10,     // Estéticas: galería, citas
+        retail: 0.15,     // Tiendas: catálogos
+        services: 0.10,   // Servicios: portafolio
+        hospitality: 0.25, // Hoteles: reservaciones, multiidioma, mucho contenido
+        other: 0.05
+      };
+      priceModifier += businessComplexity[businessType] || 0.05;
+
+      // Limitar el modificador a máximo 100% del rango
+      priceModifier = Math.min(priceModifier, 1);
+
+      // Calcular precio final y redondear a múltiplos de 500
+      const rawPrice = plan.minPrice + (range * priceModifier);
+      const roundedPrice = Math.round(rawPrice / 500) * 500;
+
+      // Asegurar que no exceda el máximo
+      return Math.min(roundedPrice, plan.maxPrice);
+    };
+
     // ========== PASO 1: Determinar plan BASE por número de páginas ==========
     let basePlan: keyof typeof plans = "micro";
     if (pages === "landing") basePlan = "micro";
@@ -155,14 +212,16 @@ export default function ContactWizard() {
           plan: result,
           ideal: idealPlan,
           reason: "Necesitas una tienda en línea completa con carrito, pagos e inventario.",
-          missing: []
+          missing: [],
+          price: calculateEstimatedPrice(result)
         };
       } else {
         return {
           plan: result,
           ideal: idealPlan,
           reason: `Tu presupuesto alcanza el plan ${plans[result].name}.`,
-          missing: ["tienda en línea completa", "carrito de compras", "pasarela de pagos", "inventario"]
+          missing: ["tienda en línea completa", "carrito de compras", "pasarela de pagos", "inventario"],
+          price: calculateEstimatedPrice(result)
         };
       }
     }
@@ -173,7 +232,8 @@ export default function ContactWizard() {
         plan: basePlan,
         ideal: basePlan,
         reason: `Para ${pageLabels[pages]} con información básica, este plan es perfecto.`,
-        missing: []
+        missing: [],
+        price: calculateEstimatedPrice(basePlan)
       };
     }
 
@@ -246,7 +306,7 @@ export default function ContactWizard() {
       }
     }
 
-    return { plan: result, ideal: idealPlanKey, reason, missing };
+    return { plan: result, ideal: idealPlanKey, reason, missing, price: calculateEstimatedPrice(result) };
   };
 
   // Función para limitar por presupuesto (no recomendar más de lo que pueden pagar)
@@ -278,11 +338,12 @@ export default function ContactWizard() {
 
   const handleNext = () => {
     if (step === 4) {
-      const { plan, ideal, reason, missing } = calculateRecommendation();
+      const { plan, ideal, reason, missing, price } = calculateRecommendation();
       setRecommendedPlan(plan);
       setIdealPlan(ideal);
       setRecommendationReason(reason);
       setMissingFeatures(missing);
+      setEstimatedPrice(price);
       setStep("result");
     } else if (step !== "result") {
       setStep((step + 1) as Step);
@@ -318,6 +379,7 @@ export default function ContactWizard() {
     setIdealPlan(null);
     setRecommendationReason("");
     setMissingFeatures([]);
+    setEstimatedPrice(0);
   };
 
   const canProceed = () => {
@@ -337,7 +399,8 @@ export default function ContactWizard() {
     const businessLabel = businessTypes.find(b => b.id === answers.businessType)?.label || answers.businessType;
     const featuresLabels = answers.features.map(f => featureOptions.find(fo => fo.id === f)?.label).filter(Boolean).join(", ");
 
-    return `Hola, me interesa el plan ${currentPlan.name} (${currentPlan.priceRange}).
+    return `Hola, me interesa el plan ${currentPlan.name}.
+Precio estimado: $${estimatedPrice.toLocaleString('es-MX')} MXN
 
 Mi negocio: ${businessLabel}
 Funcionalidades que necesito: ${featuresLabels || "Información básica"}
@@ -531,8 +594,13 @@ Funcionalidades que necesito: ${featuresLabels || "Información básica"}
 
             <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
               <div className="flex items-baseline justify-between mb-4">
-                <span className="text-3xl font-bold text-white">{currentPlan.price}</span>
-                <span className="text-gray-400 text-sm">{currentPlan.priceRange}</span>
+                <div>
+                  <span className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+                    ${estimatedPrice.toLocaleString('es-MX')} MXN
+                  </span>
+                  <span className="text-gray-500 text-xs ml-2">precio estimado</span>
+                </div>
+                <span className="text-gray-400 text-sm">Rango: {currentPlan.priceRange}</span>
               </div>
               <p className="text-gray-300 mb-4">{currentPlan.description}</p>
               <ul className="space-y-2 mb-4">
