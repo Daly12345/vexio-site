@@ -772,6 +772,18 @@ html.lenis, html.lenis body {
   border-color: rgba(6, 182, 212, 0.5) !important;
 }
 
+/* FAQ mobile cards */
+[data-theme="light"] .bg-gray-900\/95.rounded-xl {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* FAQ icons - ensure they stay cyan in light mode */
+[data-theme="light"] #faq .text-cyan-400,
+[data-theme="light"] #faq svg.text-cyan-400 {
+  color: #0891b2 !important;
+}
+
 /* Values cards icon containers */
 [data-theme="light"] .bg-cyan-500\/10.rounded-xl {
   background-color: rgba(6, 182, 212, 0.1) !important;
