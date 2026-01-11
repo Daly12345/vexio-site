@@ -378,30 +378,6 @@ html.lenis, html.lenis body {
     animation: none !important;
     background-size: 100% 100% !important;
   }
-
-  /* Optimize sections below the fold for faster initial paint */
-  section:not(:first-of-type) {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 800px;
-  }
-
-  /* Reduce decorative elements */
-  .bg-grid-pattern {
-    display: none !important;
-  }
-
-  /* Simpler shadows on mobile */
-  .shadow-2xl,
-  .shadow-xl {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-  }
-}
-
-/* GPU promotion for frequently animated elements */
-.animate-float,
-.animate-pulse-glow,
-[data-motion-opacity] {
-  will-change: transform, opacity;
 }
 
 /* Focus styles */
@@ -437,25 +413,25 @@ html.lenis, html.lenis body {
   background-color: #cbd5e1 !important;
 }
 
-/* Text colors - WCAG AA compliant (4.5:1 minimum ratio) */
+/* Text colors */
 [data-theme="light"] .text-white {
   color: #0f172a !important;
 }
 
 [data-theme="light"] .text-gray-300 {
-  color: #1e293b !important; /* slate-800 */
+  color: #475569 !important;
 }
 
 [data-theme="light"] .text-gray-400 {
-  color: #334155 !important; /* slate-700 */
+  color: #64748b !important;
 }
 
 [data-theme="light"] .text-gray-500 {
-  color: #475569 !important; /* slate-600 */
+  color: #94a3b8 !important;
 }
 
 [data-theme="light"] .text-gray-600 {
-  color: #334155 !important; /* slate-700 */
+  color: #64748b !important;
 }
 
 /* Border colors */
@@ -629,17 +605,17 @@ html.lenis, html.lenis body {
   color: #94a3b8 !important;
 }
 
-/* Fix text colors that might have been missed - WCAG AA compliant */
+/* Fix text colors that might have been missed */
 [data-theme="light"] .text-gray-300 {
-  color: #1e293b !important; /* slate-800 */
+  color: #475569 !important;
 }
 
 [data-theme="light"] .text-gray-400 {
-  color: #334155 !important; /* slate-700 */
+  color: #64748b !important;
 }
 
 [data-theme="light"] .text-gray-500 {
-  color: #475569 !important; /* slate-600 */
+  color: #94a3b8 !important;
 }
 
 /* Contact section - "Por qué elegirnos" card */
@@ -948,21 +924,17 @@ html.lenis, html.lenis body {
   background: linear-gradient(180deg, #ffffff 0%, #e0f2fe 50%, #ffffff 100%) !important;
 }
 
-/* Text with better contrast - WCAG AA compliant (4.5:1 minimum) */
+/* Text with better contrast */
 [data-theme="light"] .text-white {
   color: #0c1425 !important;
 }
 
 [data-theme="light"] .text-gray-300 {
-  color: #1e293b !important; /* slate-800 for better contrast */
+  color: #334155 !important;
 }
 
 [data-theme="light"] .text-gray-400 {
-  color: #334155 !important; /* slate-700 for WCAG compliance */
-}
-
-[data-theme="light"] .text-gray-500 {
-  color: #475569 !important; /* slate-600 for better readability */
+  color: #475569 !important;
 }
 
 /* Glass cards with cyan tint */
