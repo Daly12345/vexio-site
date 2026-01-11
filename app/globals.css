@@ -90,6 +90,38 @@
   }
 }
 
+/* Optimized pulse animation for dots - uses GPU acceleration */
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.3);
+  }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 4s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+/* Slow bounce animation for scroll indicator */
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 0.5;
+  }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s ease-in-out infinite;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -334,6 +366,17 @@ html.lenis, html.lenis body {
   color: inherit;
 }
 
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+
+/* Reduce blur intensity globally for better performance */
+.blur-3xl {
+  filter: blur(48px) !important;
+}
+
+.blur-2xl {
+  filter: blur(32px) !important;
+}
+
 /* ===== MOBILE PERFORMANCE OPTIMIZATIONS ===== */
 @media (max-width: 1023px) {
   /* Disable backdrop-blur on mobile - very expensive */
@@ -355,15 +398,15 @@ html.lenis, html.lenis body {
 
   /* Reduce blur intensity on decorative elements */
   .blur-3xl {
-    filter: blur(40px) !important;
+    filter: blur(24px) !important;
   }
 
   .blur-2xl {
-    filter: blur(25px) !important;
+    filter: blur(16px) !important;
   }
 
   .blur-xl {
-    filter: blur(15px) !important;
+    filter: blur(10px) !important;
   }
 
   /* Disable complex animations */
@@ -377,6 +420,62 @@ html.lenis, html.lenis body {
   .text-gradient-animated {
     animation: none !important;
     background-size: 100% 100% !important;
+  }
+}
+
+/* ===== REDUCED MOTION PREFERENCES ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-pulse-dot,
+  .animate-float,
+  .animate-gradient,
+  .animate-spin-slow,
+  .animate-pulse-glow {
+    animation: none !important;
+  }
+}
+
+/* ===== LOW PERFORMANCE MODE (can be toggled via data attribute) ===== */
+[data-performance="low"] {
+  /* Disable all backdrop blurs */
+  .backdrop-blur-xl,
+  .backdrop-blur-lg,
+  .backdrop-blur-md,
+  .backdrop-blur-sm,
+  .backdrop-blur,
+  .glass,
+  .glass-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Disable all decorative blurs */
+  .blur-3xl,
+  .blur-2xl,
+  .blur-xl {
+    filter: none !important;
+    opacity: 0.5 !important;
+  }
+
+  /* Disable all animations */
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Hide decorative elements */
+  .bg-grid-pattern {
+    display: none !important;
   }
 }
 

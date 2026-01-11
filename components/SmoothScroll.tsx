@@ -4,14 +4,18 @@ import { useEffect, useRef, useState } from "react";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<unknown>(null);
-  const [isMobile, setIsMobile] = useState(true);
+  const [shouldUseLenis, setShouldUseLenis] = useState(false);
 
   useEffect(() => {
-    // Check if mobile - disable Lenis on mobile to reduce TBT
-    const checkMobile = window.innerWidth < 1024 || "ontouchstart" in window;
-    setIsMobile(checkMobile);
+    // Check if we should use Lenis - skip on mobile, reduced motion, or low performance mode
+    const isMobile = window.innerWidth < 1024 || "ontouchstart" in window;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isLowPerformance = document.documentElement.dataset.performance === "low";
 
-    if (checkMobile) {
+    const shouldUse = !isMobile && !prefersReducedMotion && !isLowPerformance;
+    setShouldUseLenis(shouldUse);
+
+    if (!shouldUse) {
       // On mobile, just handle anchor links with native smooth scroll
       const handleAnchorClick = (e: MouseEvent) => {
         const target = e.target as HTMLElement;
