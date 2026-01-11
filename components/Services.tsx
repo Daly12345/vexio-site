@@ -99,7 +99,7 @@ export default function Services() {
                 completas
               </span>
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-200 max-w-3xl mx-auto">
               Todo lo que necesitas para impulsar tu presencia en linea y hacer crecer tu negocio
             </p>
           </div>
@@ -137,7 +137,7 @@ export default function Services() {
                   </h3>
 
                   {/* Description */}
-                  <p className="text-gray-300 leading-relaxed mb-6">{service.description}</p>
+                  <p className="text-gray-200 leading-relaxed mb-6">{service.description}</p>
 
                   {/* Features list */}
                   <ul className="space-y-3">

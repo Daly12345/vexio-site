@@ -29,9 +29,9 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? "bg-black/80 backdrop-blur-xl border-b border-gray-800/50 shadow-lg shadow-black/20"
@@ -102,6 +102,8 @@ export default function Navbar() {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="relative w-10 h-10 flex items-center justify-center text-gray-300 hover:text-cyan-400 focus:outline-none"
               whileTap={{ scale: 0.9 }}
+              aria-label={isMenuOpen ? "Cerrar menú de navegación" : "Abrir menú de navegación"}
+              aria-expanded={isMenuOpen}
             >
               <div className="relative w-6 h-5 flex flex-col justify-between">
                 <motion.span

@@ -1,0 +1,18 @@
+# Browsers that support modern JavaScript (ES2020+)
+# This eliminates legacy polyfills and reduces bundle size
+
+# Production: Only modern browsers from the last 2 years
+[production]
+last 2 Chrome versions
+last 2 Firefox versions
+last 2 Safari versions
+last 2 Edge versions
+not dead
+not op_mini all
+
+# Development: Same as production for consistency
+[development]
+last 2 Chrome versions
+last 2 Firefox versions
+last 2 Safari versions
+last 2 Edge versions

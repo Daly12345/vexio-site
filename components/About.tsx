@@ -104,12 +104,12 @@ export default function About() {
                   digitales únicas
                 </span>
               </h2>
-              <p className="text-xl text-gray-300 mb-8 leading-relaxed">
+              <p className="text-xl text-gray-200 mb-8 leading-relaxed">
                 Somos un equipo apasionado por el desarrollo web y el diseño digital.
                 Nos especializamos en crear sitios web que no solo se ven increíbles,
                 sino que también generan resultados reales para tu negocio.
               </p>
-              <p className="text-gray-300 mb-8 leading-relaxed">
+              <p className="text-gray-200 mb-8 leading-relaxed">
                 Desde landing pages simples hasta tiendas en línea completas,
                 utilizamos las últimas tecnologías para asegurar que tu sitio sea
                 rápido, seguro y optimizado para convertir visitantes en clientes.

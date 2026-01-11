@@ -49,24 +49,24 @@ export default function Hero() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [mouseX, mouseY, isMobile]);
 
-  // CLS-optimized variants - only animate opacity, not position
+  // CLS-optimized variants - faster on mobile for better LCP
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: isMobile ? 1 : 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1,
+        staggerChildren: isMobile ? 0 : 0.08,
+        delayChildren: isMobile ? 0 : 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: isMobile ? 1 : 0 },
     visible: {
       opacity: 1,
       transition: {
-        duration: 0.5,
+        duration: isMobile ? 0 : 0.5,
         ease: "easeOut" as const,
       },
     },
@@ -227,9 +227,10 @@ export default function Hero() {
               <motion.span
                 className="relative inline-block"
               >
+                {/* backgroundPosition animation disabled on mobile for performance */}
                 <motion.span
                   className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-300%"
-                  animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+                  animate={isMobile ? {} : { backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
                   transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                 >
                   impresionan
@@ -266,7 +267,7 @@ export default function Hero() {
             {/* Subheadline */}
             <motion.p
               variants={itemVariants}
-              className="text-lg sm:text-xl text-gray-300 max-w-xl mx-auto lg:mx-0 leading-relaxed"
+              className="text-lg sm:text-xl text-gray-200 max-w-xl mx-auto lg:mx-0 leading-relaxed"
             >
               Diseño profesional, desarrollo rápido y resultados que convierten visitantes en clientes.
             </motion.p>
@@ -509,17 +510,14 @@ export default function Hero() {
                           />
                         </div>
                         <div className="w-1/3">
-                          <motion.div
-                            className="w-full aspect-square bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-lg border border-cyan-500/30"
-                            animate={{
-                              boxShadow: [
-                                "0 0 20px rgba(6, 182, 212, 0.2)",
-                                "0 0 40px rgba(6, 182, 212, 0.4)",
-                                "0 0 20px rgba(6, 182, 212, 0.2)"
-                              ]
-                            }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                          />
+                          <div className="relative w-full aspect-square bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-lg border border-cyan-500/30">
+                            {/* Glow effect using opacity animation instead of boxShadow for GPU compositing */}
+                            <motion.div
+                              className="absolute -inset-2 bg-cyan-500/20 rounded-lg blur-xl"
+                              animate={{ opacity: [0.3, 0.6, 0.3] }}
+                              transition={{ duration: 2, repeat: Infinity }}
+                            />
+                          </div>
                         </div>
                       </div>
 

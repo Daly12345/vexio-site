@@ -77,7 +77,7 @@ export default function FAQ() {
                 dudas
               </span>
             </h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-200 max-w-2xl mx-auto">
               Las preguntas más comunes sobre nuestros servicios
             </p>
           </div>
@@ -127,7 +127,7 @@ export default function FAQ() {
                 {openIndex === index && (
                   <div className="px-4 pb-4">
                     <div className="pt-2 border-t border-gray-800">
-                      <p className="text-gray-300 text-sm leading-relaxed pt-3">
+                      <p className="text-gray-200 text-sm leading-relaxed pt-3">
                         {faq.answer}
                       </p>
                     </div>
@@ -189,7 +189,7 @@ export default function FAQ() {
                     <div className="overflow-hidden">
                       <div className="px-6 pb-6">
                         <div className="pt-2 border-t border-gray-800">
-                          <p className="text-gray-300 leading-relaxed pt-4">
+                          <p className="text-gray-200 leading-relaxed pt-4">
                             {faq.answer}
                           </p>
                         </div>
