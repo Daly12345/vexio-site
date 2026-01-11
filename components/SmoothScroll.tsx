@@ -1,22 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { usePerformance } from "./PerformanceProvider";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<unknown>(null);
-  const [shouldUseLenis, setShouldUseLenis] = useState(false);
+  const { mode } = usePerformance();
 
   useEffect(() => {
-    // Check if we should use Lenis - skip on mobile, reduced motion, or low performance mode
+    // Check if we should use Lenis
     const isMobile = window.innerWidth < 1024 || "ontouchstart" in window;
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isLowPerformance = document.documentElement.dataset.performance === "low";
+    const shouldUseLenis = !isMobile && mode === "high";
 
-    const shouldUse = !isMobile && !prefersReducedMotion && !isLowPerformance;
-    setShouldUseLenis(shouldUse);
-
-    if (!shouldUse) {
-      // On mobile, just handle anchor links with native smooth scroll
+    if (!shouldUseLenis) {
+      // On mobile or low performance, just handle anchor links with native smooth scroll
       const handleAnchorClick = (e: MouseEvent) => {
         const target = e.target as HTMLElement;
         const anchor = target.closest('a[href^="#"]');
@@ -35,7 +32,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       return () => document.removeEventListener("click", handleAnchorClick);
     }
 
-    // Desktop only: load and initialize Lenis
+    // Desktop with high performance: load and initialize Lenis
     let lenis: unknown;
     let rafId: number;
 
@@ -90,7 +87,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       }
       document.removeEventListener("click", handleAnchorClick);
     };
-  }, []);
+  }, [mode]);
 
   return <>{children}</>;
 }

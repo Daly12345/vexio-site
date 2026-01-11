@@ -2,19 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { motion, useMotionValue } from "framer-motion";
+import { usePerformance } from "./PerformanceProvider";
 
 export default function CustomCursor() {
+  const { mode } = usePerformance();
   const [shouldRender, setShouldRender] = useState(false);
 
   // Check if we should render the cursor
   useEffect(() => {
-    // Skip on mobile, touch devices, or low performance mode
+    // Skip on mobile or touch devices
     const isMobile = window.innerWidth < 768 || "ontouchstart" in window;
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isLowPerformance = document.documentElement.dataset.performance === "low";
 
-    setShouldRender(!isMobile && !prefersReducedMotion && !isLowPerformance);
-  }, []);
+    // Only render on desktop with high performance mode
+    setShouldRender(!isMobile && mode === "high");
+  }, [mode]);
 
   // Early return - skip all the expensive hooks
   if (!shouldRender) return null;
@@ -25,25 +26,21 @@ export default function CustomCursor() {
 // Inner component only renders on desktop with good performance
 function CursorInner() {
   const [isHovering, setIsHovering] = useState(false);
+  const [isClicking, setIsClicking] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
   useEffect(() => {
-    // Throttled cursor movement for better performance
-    let ticking = false;
     const moveCursor = (e: MouseEvent) => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          cursorX.set(e.clientX);
-          cursorY.set(e.clientY);
-          if (!isVisible) setIsVisible(true);
-          ticking = false;
-        });
-        ticking = true;
-      }
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+      setIsVisible(true);
     };
+
+    const handleMouseDown = () => setIsClicking(true);
+    const handleMouseUp = () => setIsClicking(false);
 
     const handleMouseEnter = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -62,40 +59,60 @@ function CursorInner() {
     const handleMouseLeave = () => setIsHovering(false);
     const handleMouseOut = () => setIsVisible(false);
 
-    window.addEventListener("mousemove", moveCursor, { passive: true });
-    window.addEventListener("mouseover", handleMouseEnter, { passive: true });
-    window.addEventListener("mouseout", handleMouseLeave, { passive: true });
+    window.addEventListener("mousemove", moveCursor);
+    window.addEventListener("mouseover", handleMouseEnter);
+    window.addEventListener("mouseout", handleMouseLeave);
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
     document.addEventListener("mouseleave", handleMouseOut);
 
     return () => {
       window.removeEventListener("mousemove", moveCursor);
       window.removeEventListener("mouseover", handleMouseEnter);
       window.removeEventListener("mouseout", handleMouseLeave);
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
       document.removeEventListener("mouseleave", handleMouseOut);
     };
-  }, [cursorX, cursorY, isVisible]);
+  }, [cursorX, cursorY]);
 
   return (
     <>
-      {/* Simplified cursor - single element for better performance */}
+      {/* Dot - follows cursor directly */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[9999]"
-        style={{ x: cursorX, y: cursorY, willChange: "transform" }}
+        style={{ x: cursorX, y: cursorY }}
       >
         <motion.div
           className="relative -translate-x-1/2 -translate-y-1/2"
           animate={{
-            scale: isHovering ? 1.5 : 1,
+            scale: isClicking ? 0.8 : isHovering ? 0 : 1,
+            opacity: isVisible ? 1 : 0,
+          }}
+          transition={{ duration: 0.1 }}
+        >
+          <div className="w-2 h-2 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.8)]" />
+        </motion.div>
+      </motion.div>
+
+      {/* Ring - follows cursor directly (no delay) */}
+      <motion.div
+        className="fixed top-0 left-0 pointer-events-none z-[9998]"
+        style={{ x: cursorX, y: cursorY }}
+      >
+        <motion.div
+          className="relative -translate-x-1/2 -translate-y-1/2"
+          animate={{
+            scale: isClicking ? 0.9 : isHovering ? 1.5 : 1,
             opacity: isVisible ? 1 : 0,
           }}
           transition={{ duration: 0.15 }}
         >
           <div
-            className={`w-6 h-6 rounded-full border-2 transition-colors duration-150 ${
+            className={`w-8 h-8 rounded-full border-2 transition-colors duration-200 ${
               isHovering ? "border-cyan-400 bg-cyan-400/20" : "border-cyan-400/50"
             }`}
           />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-cyan-400 rounded-full" />
         </motion.div>
       </motion.div>
     </>
