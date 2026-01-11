@@ -133,9 +133,9 @@ html {
   scroll-behavior: auto; /* Lenis handles smooth scroll */
 }
 
-/* Hide default cursor on desktop (pointer devices) */
+/* Hide default cursor on desktop (pointer devices) - only in high performance mode */
 @media (pointer: fine) and (min-width: 768px) {
-  * {
+  [data-performance="high"] * {
     cursor: none !important;
   }
 }
