@@ -51,8 +51,9 @@ export function PerformanceProvider({ children }: Props) {
     let lastTime = performance.now();
     let animationId: number;
     const fpsSamples: number[] = [];
-    const SAMPLE_DURATION = 2000; // 2 seconds of measurement
-    const FPS_THRESHOLD = 45; // If FPS drops below this, switch to low mode
+    const SAMPLE_DURATION = 2500; // 2.5 seconds of measurement
+    const FPS_THRESHOLD = 58; // Must maintain ~60 FPS for smooth experience
+    const FPS_MIN_THRESHOLD = 55; // Minimum acceptable FPS
     const startTime = performance.now();
 
     const measureFPS = (currentTime: number) => {
@@ -73,15 +74,16 @@ export function PerformanceProvider({ children }: Props) {
         const avgFps = fpsSamples.reduce((a, b) => a + b, 0) / fpsSamples.length;
         const minFps = Math.min(...fpsSamples);
 
-        // Use low mode if average FPS is below threshold or if there were significant drops
-        if (avgFps < FPS_THRESHOLD || minFps < 30) {
-          setMode("low");
-          document.documentElement.dataset.performance = "low";
-          localStorage.setItem("performance-mode", "low");
-        } else {
+        // Use high mode only if we can maintain solid 60 FPS
+        // Average must be ≥58 FPS and minimum must be ≥55 FPS
+        if (avgFps >= FPS_THRESHOLD && minFps >= FPS_MIN_THRESHOLD) {
           setMode("high");
           document.documentElement.dataset.performance = "high";
           localStorage.setItem("performance-mode", "high");
+        } else {
+          setMode("low");
+          document.documentElement.dataset.performance = "low";
+          localStorage.setItem("performance-mode", "low");
         }
         return;
       }
