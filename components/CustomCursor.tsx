@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 
 export default function CustomCursor() {
   const [isMobile, setIsMobile] = useState(true); // Default to true to prevent flash
@@ -26,14 +26,6 @@ function CursorInner() {
 
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
-
-  const springConfig = { damping: 30, stiffness: 450 };
-  const cursorXSpring = useSpring(cursorX, springConfig);
-  const cursorYSpring = useSpring(cursorY, springConfig);
-
-  const dotSpringConfig = { damping: 40, stiffness: 600 };
-  const dotXSpring = useSpring(cursorX, dotSpringConfig);
-  const dotYSpring = useSpring(cursorY, dotSpringConfig);
 
   useEffect(() => {
     const moveCursor = (e: MouseEvent) => {
@@ -81,9 +73,10 @@ function CursorInner() {
 
   return (
     <>
+      {/* Dot - follows cursor directly */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[9999]"
-        style={{ x: dotXSpring, y: dotYSpring }}
+        style={{ x: cursorX, y: cursorY }}
       >
         <motion.div
           className="relative -translate-x-1/2 -translate-y-1/2"
@@ -91,44 +84,32 @@ function CursorInner() {
             scale: isClicking ? 0.8 : isHovering ? 0 : 1,
             opacity: isVisible ? 1 : 0,
           }}
-          transition={{ duration: 0.15 }}
+          transition={{ duration: 0.1 }}
         >
           <div className="w-2 h-2 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.8)]" />
         </motion.div>
       </motion.div>
 
+      {/* Ring - follows cursor directly (no delay) */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[9998]"
-        style={{ x: cursorXSpring, y: cursorYSpring }}
+        style={{ x: cursorX, y: cursorY }}
       >
         <motion.div
           className="relative -translate-x-1/2 -translate-y-1/2"
           animate={{
-            scale: isClicking ? 0.9 : isHovering ? 2 : 1,
+            scale: isClicking ? 0.9 : isHovering ? 1.5 : 1,
             opacity: isVisible ? 1 : 0,
           }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
+          transition={{ duration: 0.15 }}
         >
           <div
-            className={`w-10 h-10 rounded-full border-2 transition-colors duration-200 ${
+            className={`w-8 h-8 rounded-full border-2 transition-colors duration-200 ${
               isHovering ? "border-cyan-400 bg-cyan-400/20" : "border-cyan-400/50"
             }`}
           />
         </motion.div>
       </motion.div>
-
-      {isHovering && (
-        <motion.div
-          className="fixed top-0 left-0 pointer-events-none z-[9997]"
-          style={{ x: cursorXSpring, y: cursorYSpring }}
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.3 }}
-          exit={{ scale: 0, opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className="relative -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-cyan-400 blur-xl" />
-        </motion.div>
-      )}
     </>
   );
 }
