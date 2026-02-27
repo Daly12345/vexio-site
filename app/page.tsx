@@ -6,6 +6,7 @@ import Pricing from "@/components/Pricing";
 import Process from "@/components/Process";
 import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
+import DemoCTA from "@/components/DemoCTA";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
       <Stats />
       <Services />
       <Pricing />
+      <DemoCTA />
       <Process />
       <FAQ />
       <Contact />

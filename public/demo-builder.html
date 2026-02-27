@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vexio · Demo Builder — Diseña tu sitio ideal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   RESET & BASE
+   ============================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0F1E;--bg2:#111827;--surface:#1a2235;
+  --cyan:#00D4FF;--purple:#7B2FBE;--green:#25D366;--green-dark:#075E54;--green-mid:#128C7E;
+  --text:#E8ECF1;--text-dim:#8892A4;--text-bright:#FFFFFF;
+  --radius:16px;--radius-sm:10px;
+  --glass:rgba(255,255,255,.06);--glass-border:rgba(255,255,255,.1);
+  --shadow-cyan:0 0 30px rgba(0,212,255,.15);
+  --transition:all .35s cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+input{font-family:inherit}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.header{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,15,30,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border)}
+.logo{font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.badge{font-size:.75rem;font-weight:600;padding:4px 12px;border-radius:20px;background:rgba(0,212,255,.12);color:var(--cyan);border:1px solid rgba(0,212,255,.25);margin-left:12px}
+
+/* ============================================
+   PROGRESS BAR
+   ============================================ */
+.progress-wrap{position:fixed;top:58px;left:0;right:0;z-index:99;height:4px;background:rgba(255,255,255,.06)}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:width .5s cubic-bezier(.4,0,.2,1);width:25%;border-radius:0 2px 2px 0}
+.steps-indicator{position:fixed;top:66px;left:0;right:0;z-index:98;display:flex;justify-content:center;gap:8px;padding:12px 20px}
+.step-dot{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--text-dim);font-weight:500;transition:var(--transition)}
+.step-dot.active{color:var(--cyan)}
+.step-dot.done{color:var(--green)}
+.step-dot .dot{width:8px;height:8px;border-radius:50%;background:var(--text-dim);transition:var(--transition)}
+.step-dot.active .dot{background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.step-dot.done .dot{background:var(--green)}
+.step-line{width:30px;height:2px;background:var(--glass-border);align-self:center}
+
+/* ============================================
+   MAIN CONTAINER
+   ============================================ */
+.main{max-width:1100px;margin:0 auto;padding:120px 20px 60px}
+.step{display:none;animation:fadeSlideIn .5s ease forwards}
+.step.active{display:block}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+.step-title{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;text-align:center;margin-bottom:8px;background:linear-gradient(135deg,var(--text-bright),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.step-sub{text-align:center;color:var(--text-dim);margin-bottom:40px;font-size:1rem}
+
+/* ============================================
+   STEP 1 — INDUSTRY GRID
+   ============================================ */
+.industry-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;max-width:960px;margin:0 auto}
+.industry-card{position:relative;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);padding:28px 20px;text-align:center;cursor:pointer;transition:var(--transition);overflow:hidden}
+.industry-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(123,47,190,.08));opacity:0;transition:var(--transition)}
+.industry-card:hover{border-color:rgba(0,212,255,.35);transform:translateY(-4px);box-shadow:var(--shadow-cyan)}
+.industry-card:hover::before{opacity:1}
+.industry-card.selected{border-color:var(--cyan);box-shadow:var(--shadow-cyan);background:rgba(0,212,255,.08)}
+.industry-card.selected::after{content:'✓';position:absolute;top:10px;right:12px;font-size:.85rem;background:var(--cyan);color:var(--bg);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+.industry-icon{font-size:2.8rem;margin-bottom:12px;position:relative;z-index:1}
+.industry-name{font-weight:700;font-size:1rem;position:relative;z-index:1;color:var(--text-bright)}
+.industry-plan{font-size:.78rem;color:var(--text-dim);margin-top:6px;position:relative;z-index:1}
+
+/* ============================================
+   STEP 2 — CUSTOMIZATION
+   ============================================ */
+.custom-section{max-width:720px;margin:0 auto}
+.input-group{margin-bottom:24px}
+.input-group label{display:block;font-weight:600;font-size:.9rem;margin-bottom:8px;color:var(--text-bright)}
+.input-group input[type="text"],.input-group input[type="email"]{width:100%;padding:14px 18px;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-sm);color:var(--text-bright);font-size:1rem;transition:var(--transition);outline:none}
+.input-group input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,212,255,.15)}
+.input-group input::placeholder{color:var(--text-dim)}
+
+.toggle-section{margin-top:36px}
+.toggle-section-title{font-weight:700;font-size:1.1rem;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.toggle-section-title .icon{font-size:1.3rem}
+
+.toggle-card{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-sm);margin-bottom:10px;transition:var(--transition);position:relative;flex-wrap:wrap}
+.toggle-card:hover{border-color:rgba(0,212,255,.3)}
+.toggle-card.is-whatsapp{background:linear-gradient(135deg,rgba(7,94,84,.1),rgba(18,140,126,.08));border-color:rgba(37,211,102,.15)}
+.toggle-card.is-whatsapp:hover{border-color:rgba(37,211,102,.35)}
+.toggle-info{flex:1;min-width:0;margin-right:12px}
+.toggle-name{font-weight:600;font-size:.92rem;color:var(--text-bright);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.toggle-price{font-size:.82rem;color:var(--cyan);font-weight:600;margin-top:2px}
+.toggle-desc{font-size:.78rem;color:var(--text-dim);margin-top:4px;line-height:1.5}
+
+.badge-new{font-size:.65rem;padding:2px 8px;border-radius:10px;background:rgba(37,211,102,.2);color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.badge-included{font-size:.65rem;padding:2px 8px;border-radius:10px;background:rgba(0,212,255,.15);color:var(--cyan);font-weight:700}
+
+/* Toggle switch */
+.switch{position:relative;width:48px;height:26px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:26px;transition:var(--transition);cursor:pointer}
+.slider::before{content:'';position:absolute;width:20px;height:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:var(--transition)}
+.switch input:checked+.slider{background:var(--cyan)}
+.switch input:checked+.slider::before{transform:translateX(22px)}
+.switch.green input:checked+.slider{background:var(--green)}
+.switch.disabled{opacity:.5;pointer-events:none}
+.switch.disabled .slider{background:rgba(0,212,255,.3)}
+.switch.disabled .slider::before{transform:translateX(22px)}
+
+/* Chatbot demo bubble */
+.chat-demo{margin-top:16px;background:rgba(7,94,84,.08);border:1px solid rgba(37,211,102,.2);border-radius:var(--radius);padding:20px;animation:fadeSlideIn .4s ease}
+.chat-demo-title{font-size:.82rem;font-weight:700;color:var(--green);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.chat-bubble{padding:10px 14px;border-radius:14px;font-size:.82rem;line-height:1.5;max-width:85%;margin-bottom:8px;animation:bubbleIn .3s ease forwards;opacity:0}
+.chat-bubble:nth-child(2){animation-delay:.1s}
+.chat-bubble:nth-child(3){animation-delay:.2s}
+.chat-bubble:nth-child(4){animation-delay:.3s}
+.chat-bubble:nth-child(5){animation-delay:.4s}
+.chat-bubble.user{background:rgba(0,212,255,.15);color:var(--text-bright);margin-left:auto;border-bottom-right-radius:4px}
+.chat-bubble.bot{background:rgba(37,211,102,.15);color:var(--text-bright);border-bottom-left-radius:4px}
+@keyframes bubbleIn{to{opacity:1}}
+
+/* ============================================
+   STEP 3 — PREVIEW LAYOUT
+   ============================================ */
+.preview-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:24px;align-items:start}
+@media(max-width:768px){.preview-layout{grid-template-columns:1fr}}
+
+/* Summary panel */
+.summary-panel{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);padding:28px;position:sticky;top:120px}
+.summary-badge{display:inline-block;font-size:.7rem;font-weight:700;padding:4px 12px;border-radius:20px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
+.summary-plan{font-size:1.4rem;font-weight:800;color:var(--text-bright);margin-bottom:4px}
+.summary-price-base{font-size:.9rem;color:var(--cyan);margin-bottom:18px}
+.summary-list{list-style:none;margin-bottom:20px}
+.summary-list li{padding:6px 0;font-size:.85rem;color:var(--text);display:flex;align-items:flex-start;gap:8px}
+.summary-list li::before{content:'✓';color:var(--cyan);font-weight:700;flex-shrink:0}
+.summary-divider{height:1px;background:var(--glass-border);margin:18px 0}
+
+.wa-extras-section{background:linear-gradient(135deg,rgba(7,94,84,.12),rgba(18,140,126,.08));border:1px solid rgba(37,211,102,.2);border-radius:var(--radius-sm);padding:16px;margin-bottom:18px}
+.wa-extras-title{font-size:.85rem;font-weight:700;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.wa-extras-list{list-style:none}
+.wa-extras-list li{padding:4px 0;font-size:.82rem;color:var(--text);display:flex;justify-content:space-between}
+.wa-extras-list .price{color:var(--green);font-weight:600}
+
+.price-breakdown{background:rgba(0,212,255,.05);border-radius:var(--radius-sm);padding:16px}
+.price-row{display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem}
+.price-row.total{font-weight:800;font-size:1.1rem;color:var(--text-bright);border-top:1px solid var(--glass-border);padding-top:10px;margin-top:8px}
+.price-row .label{color:var(--text-dim)}
+.price-row .amount{color:var(--cyan);font-weight:600}
+.price-row.total .amount{background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:1.2rem}
+
+/* Mockup frame — enhanced browser chrome */
+.mockup-frame{background:#0d0d10;border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);overflow:hidden;position:relative;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+.mockup-browser-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.08)}
+.mockup-dots{display:flex;gap:6px}
+.mockup-dots span{width:10px;height:10px;border-radius:50%}
+.mockup-dots span:nth-child(1){background:#FF5F57}
+.mockup-dots span:nth-child(2){background:#FFBD2E}
+.mockup-dots span:nth-child(3){background:#28CA41}
+.mockup-url{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;font-size:.72rem;color:var(--text-dim);background:rgba(255,255,255,.05);padding:5px 14px;border-radius:6px}
+.mockup-lock{font-size:.65rem;opacity:.7}
+.mockup-body{max-height:520px;overflow-y:auto;position:relative;scroll-behavior:smooth}
+.mockup-body::-webkit-scrollbar{width:4px}
+.mockup-body::-webkit-scrollbar-track{background:transparent}
+.mockup-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12);border-radius:2px}
+
+/* ============================================
+   PREVIEW WEBSITE STYLES — pw- namespace
+   ============================================ */
+.pw-site{font-family:'Inter',system-ui,sans-serif;background:#f7f7f8;color:#1a1a2e;position:relative}
+
+/* -- Navbar -- */
+.pw-nav{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:11px 20px;background:transparent;transition:all .3s;border-bottom:1px solid transparent}
+.pw-nav.pw-scrolled{background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom-color:rgba(0,0,0,.06)}
+.pw-nav.pw-scrolled .pw-nav-links a{color:rgba(0,0,0,.45)}
+.pw-nav.pw-scrolled .pw-nav-links a:hover{color:#000}
+.pw-nav-logo{font-weight:800;font-size:.82rem}
+.pw-nav-links{display:flex;gap:12px;align-items:center}
+.pw-nav-links a{font-size:.6rem;color:rgba(255,255,255,.55);transition:color .2s}
+.pw-nav-links a:hover{color:#fff}
+.pw-nav-cta{font-size:.58rem;padding:5px 12px;color:#fff;border-radius:4px;font-weight:700;transition:transform .2s,opacity .2s}
+
+/* -- Hero (dark section) -- */
+.pw-hero{position:relative;padding:48px 24px 36px;text-align:center;overflow:hidden;background:#111118}
+.pw-hero::before{content:'';position:absolute;inset:0;background:none;pointer-events:none}
+.pw-hero h1{font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:8px;position:relative;line-height:1.25;letter-spacing:-.02em}
+.pw-hero p{font-size:.72rem;color:rgba(255,255,255,.65);max-width:380px;margin:0 auto 18px;position:relative;line-height:1.6}
+.pw-hero-btns{display:flex;gap:8px;justify-content:center;position:relative;margin-bottom:22px}
+.pw-btn-primary{padding:8px 20px;color:#fff;border-radius:4px;font-size:.68rem;font-weight:700;border:none;transition:opacity .2s}
+.pw-btn-secondary{padding:7px 18px;background:transparent;color:#fff;border-radius:4px;font-size:.68rem;font-weight:600;border:1px solid rgba(255,255,255,.2)}
+.pw-stats{display:flex;justify-content:center;gap:20px;position:relative;flex-wrap:wrap}
+.pw-stat{text-align:center;padding:6px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:6px}
+.pw-stat-value{font-size:.82rem;font-weight:800}
+.pw-stat-label{font-size:.52rem;color:rgba(255,255,255,.4);margin-top:1px}
+
+/* -- Trust bar (light) -- */
+.pw-trust-bar{padding:18px 20px 14px;text-align:center;border-bottom:1px solid rgba(0,0,0,.05);background:#fff}
+.pw-trust-bar-text{font-size:.52rem;color:rgba(0,0,0,.32);margin-bottom:10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600}
+.pw-trust-logos{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.pw-trust-logo{width:52px;height:22px;background:rgba(0,0,0,.03);border:1px solid rgba(0,0,0,.06);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.42rem;color:rgba(0,0,0,.18);font-weight:700;letter-spacing:.5px}
+
+/* -- Section divider -- */
+.pw-section-divider{width:40px;height:2px;margin:0 auto 18px;border-radius:2px;opacity:.5}
+
+/* -- Service icon bg -- */
+.pw-service-icon-bg{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:1.15rem}
+
+/* -- Testimonial avatar & quote -- */
+.pw-testimonial-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.pw-testimonial-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:800;color:#fff;flex-shrink:0}
+.pw-testimonial-author-wrap{text-align:left}
+.pw-testimonial-quote{position:absolute;top:6px;right:10px;font-size:1.6rem;font-weight:900;opacity:.06;line-height:1;pointer-events:none}
+
+/* -- Contact icon bg -- */
+.pw-contact-icon-bg{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0}
+
+/* -- Faux map -- */
+.pw-faux-map{margin-top:6px;background:rgba(0,0,0,.03);border:1px solid rgba(0,0,0,.06);border-radius:8px;height:74px;overflow:hidden;position:relative}
+.pw-faux-map svg{width:100%;height:100%}
+.pw-map-pin{animation:pw-pin-bounce 1.5s ease infinite}
+@keyframes pw-pin-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+/* -- CTA banner -- */
+.pw-cta-banner{padding:24px 20px;text-align:center;border-radius:0}
+.pw-cta-banner h3{font-size:.8rem;font-weight:800;color:#1a1a2e;margin-bottom:5px}
+.pw-cta-banner p{font-size:.55rem;color:rgba(0,0,0,.45);margin-bottom:12px}
+.pw-cta-btn{display:inline-block;padding:8px 22px;border-radius:4px;font-size:.62rem;font-weight:700;color:#fff;border:none;cursor:default}
+
+/* -- Social row (footer) -- */
+.pw-social-row{display:flex;gap:6px;justify-content:center;margin:8px 0 6px}
+.pw-social-dot{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.5rem;color:rgba(255,255,255,.35)}
+.pw-footer-copy{font-size:.45rem;color:rgba(255,255,255,.25);text-align:center;margin-top:2px}
+
+/* -- Count-up -- */
+.pw-count-up{display:inline-block}
+
+/* -- Section headers (light bg) -- */
+.pw-section-label{font-size:.55rem;text-transform:uppercase;letter-spacing:2px;text-align:center;font-weight:700;margin-bottom:4px}
+.pw-section-title{font-size:.95rem;font-weight:800;color:#1a1a2e;text-align:center;margin-bottom:16px}
+
+/* -- Services (light bg) -- */
+.pw-services{padding:28px 20px}
+.pw-services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pw-service-card{background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:8px;padding:14px 10px;text-align:center;transition:all .3s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.pw-service-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08);border-bottom:2px solid}
+.pw-service-icon{font-size:1.3rem;margin-bottom:5px}
+.pw-service-title{font-size:.65rem;font-weight:700;color:#1a1a2e;margin-bottom:3px}
+.pw-service-desc{font-size:.52rem;color:rgba(0,0,0,.45);line-height:1.45}
+
+/* -- Testimonials (light tinted bg) -- */
+.pw-testimonials{padding:28px 20px;background:#f0f0f2}
+.pw-testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pw-testimonial-card{background:#fff;border:1px solid rgba(0,0,0,.05);border-radius:8px;padding:14px;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+.pw-testimonial-stars{font-size:.6rem;margin-bottom:5px;color:#f59e0b}
+.pw-testimonial-text{font-size:.55rem;color:rgba(0,0,0,.55);line-height:1.55;margin-bottom:8px;font-style:italic}
+.pw-testimonial-author{font-size:.58rem;font-weight:700;color:#1a1a2e}
+.pw-testimonial-role{font-size:.48rem;color:rgba(0,0,0,.35)}
+
+/* -- Contact (light bg) -- */
+.pw-contact{padding:28px 20px}
+.pw-contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pw-contact-info{display:flex;flex-direction:column;gap:8px}
+.pw-contact-item{display:flex;align-items:center;gap:7px;font-size:.6rem;color:rgba(0,0,0,.55)}
+.pw-contact-item .pw-ci-icon{font-size:.8rem}
+.pw-contact-form{display:flex;flex-direction:column;gap:5px}
+.pw-contact-form input,.pw-contact-form textarea{padding:6px 10px;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:6px;color:#1a1a2e;font-size:.58rem;outline:none;font-family:inherit;transition:border-color .2s,box-shadow .2s}
+.pw-contact-form input:focus,.pw-contact-form textarea:focus{border-color:rgba(0,0,0,.2);box-shadow:0 0 0 2px rgba(0,0,0,.04)}
+.pw-contact-form textarea{resize:none;height:44px}
+.pw-form-btn{padding:6px;color:#fff;border:none;border-radius:4px;font-size:.58rem;font-weight:700;cursor:default}
+
+/* -- Footer (dark section) -- */
+.pw-footer{padding:16px 20px;background:#1a1a1f;display:flex;flex-direction:column;align-items:center;gap:6px;border-top:none}
+.pw-footer-brand{font-size:.58rem;font-weight:700}
+.pw-footer-links{display:flex;gap:10px}
+.pw-footer-links a{font-size:.5rem;color:rgba(255,255,255,.35)}
+.pw-footer-credit{font-size:.48rem;color:rgba(255,255,255,.25)}
+
+/* -- WhatsApp Widget -- */
+.pw-wa-widget{position:sticky;bottom:0;z-index:20;pointer-events:none}
+.pw-wa-inner{position:absolute;bottom:12px;right:14px;pointer-events:auto}
+.pw-wa-btn{width:38px;height:38px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.05rem;box-shadow:0 3px 14px rgba(37,211,102,.4);animation:pw-pulse 2s ease infinite;border:none;cursor:default}
+@keyframes pw-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.pw-wa-tooltip{position:absolute;bottom:46px;right:0;background:#fff;color:#333;padding:5px 10px;border-radius:8px;font-size:.52rem;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,.18);font-weight:500}
+.pw-wa-tooltip::after{content:'';position:absolute;bottom:-4px;right:14px;width:8px;height:8px;background:#fff;transform:rotate(45deg)}
+
+/* -- Scroll animations -- */
+.pw-fade-in{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.pw-fade-in.pw-visible{opacity:1;transform:translateY(0)}
+
+
+/* -- Expand button in browser bar -- */
+.mockup-expand-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:var(--text-dim);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:6px;cursor:pointer;transition:var(--transition);flex-shrink:0}
+.mockup-expand-btn:hover{color:var(--cyan);border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.08)}
+
+/* -- Fullscreen expand overlay -- */
+.expand-overlay{display:none;position:fixed;inset:0;z-index:150;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
+.expand-overlay.show{display:flex}
+.expand-overlay .expand-close{position:fixed;top:18px;right:24px;z-index:152;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:1.3rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);border:1px solid rgba(255,255,255,.15)}
+.expand-overlay .expand-close:hover{background:rgba(255,255,255,.22)}
+.mockup-frame.expanded{position:relative;z-index:151;width:100%;max-width:900px;height:calc(100vh - 60px);border-radius:var(--radius);box-shadow:0 16px 60px rgba(0,0,0,.6)}
+.mockup-frame.expanded .mockup-body{max-height:calc(100vh - 100px);zoom:1.25}
+
+/* ============================================
+   STEP 4 — QUOTE
+   ============================================ */
+.quote-card{max-width:680px;margin:0 auto;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);padding:36px;text-align:center}
+.quote-biz{font-size:1.6rem;font-weight:800;color:var(--text-bright);margin-bottom:4px}
+.quote-city{font-size:.95rem;color:var(--text-dim);margin-bottom:24px}
+.quote-plan-name{font-size:1.1rem;font-weight:700;color:var(--cyan);margin-bottom:20px}
+
+.quote-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:left;margin-bottom:24px}
+@media(max-width:500px){.quote-detail-grid{grid-template-columns:1fr}}
+.quote-detail-box{background:rgba(255,255,255,.03);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:16px}
+.quote-detail-box h4{font-size:.82rem;font-weight:700;color:var(--text-dim);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.quote-detail-box ul{list-style:none}
+.quote-detail-box li{font-size:.85rem;padding:3px 0;color:var(--text)}
+.quote-detail-box.wa-box{border-color:rgba(37,211,102,.2);background:rgba(7,94,84,.08)}
+.quote-detail-box.wa-box h4{color:var(--green)}
+
+.quote-range{font-size:1.8rem;font-weight:900;margin:20px 0 6px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.quote-delivery{font-size:.88rem;color:var(--text-dim);margin-bottom:6px}
+.quote-wa-note{font-size:.82rem;color:var(--green);margin-bottom:24px;display:flex;align-items:center;justify-content:center;gap:6px}
+
+.cta-group{display:flex;flex-direction:column;gap:12px;max-width:400px;margin:0 auto}
+.cta-btn{padding:16px 24px;border-radius:var(--radius-sm);font-weight:700;font-size:.95rem;transition:var(--transition);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px}
+.cta-btn.primary{background:linear-gradient(135deg,var(--cyan),#00a8cc);color:var(--bg)}
+.cta-btn.primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,212,255,.35)}
+.cta-btn.secondary{background:var(--glass);border:1px solid var(--glass-border);color:var(--text-bright)}
+.cta-btn.secondary:hover{border-color:var(--cyan)}
+.cta-btn.wa-btn{background:linear-gradient(135deg,var(--green),var(--green-mid));color:#fff}
+.cta-btn.wa-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(37,211,102,.35)}
+
+/* Email mini-form */
+.email-form{display:none;margin-top:16px;animation:fadeSlideIn .3s ease}
+.email-form.show{display:flex;gap:10px;max-width:400px;margin:16px auto 0}
+.email-form input{flex:1}
+.email-form button{padding:14px 20px;background:var(--cyan);color:var(--bg);font-weight:700;border-radius:var(--radius-sm);white-space:nowrap;font-size:.88rem}
+.email-confirm{display:none;margin-top:14px;padding:14px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.25);border-radius:var(--radius-sm);color:var(--green);font-size:.88rem;text-align:center;animation:fadeSlideIn .3s ease}
+.email-confirm.show{display:block}
+
+/* ============================================
+   NAV BUTTONS
+   ============================================ */
+.nav-buttons{display:flex;justify-content:center;gap:14px;margin-top:40px}
+.nav-btn{padding:14px 36px;border-radius:var(--radius-sm);font-weight:700;font-size:.95rem;transition:var(--transition)}
+.nav-btn.back{background:var(--glass);border:1px solid var(--glass-border);color:var(--text)}
+.nav-btn.back:hover{border-color:var(--cyan)}
+.nav-btn.next{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff}
+.nav-btn.next:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,212,255,.3)}
+.nav-btn:disabled{opacity:.35;pointer-events:none}
+
+/* ============================================
+   CHATBOT MODAL
+   ============================================ */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--bg2);border:1px solid var(--glass-border);border-radius:var(--radius);width:100%;max-width:420px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;animation:fadeSlideIn .3s ease}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--green-dark);color:#fff}
+.modal-header-info{display:flex;align-items:center;gap:10px}
+.modal-avatar{width:38px;height:38px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.modal-header-text h3{font-size:.92rem;font-weight:700}
+.modal-header-text p{font-size:.72rem;opacity:.8}
+.modal-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.modal-close:hover{background:rgba(255,255,255,.25)}
+.modal-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h60v60H0z' fill='%230d1117'/%3E%3Cpath d='M30 5l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4z' fill='%23ffffff' opacity='.02'/%3E%3C/svg%3E")}
+.modal-msg{padding:10px 14px;border-radius:12px;font-size:.85rem;line-height:1.5;max-width:82%;animation:bubbleIn .3s ease forwards}
+.modal-msg.bot{background:rgba(37,211,102,.12);color:var(--text-bright);align-self:flex-start;border-bottom-left-radius:4px}
+.modal-msg.user{background:rgba(0,212,255,.12);color:var(--text-bright);align-self:flex-end;border-bottom-right-radius:4px}
+.modal-msg.typing{background:rgba(37,211,102,.12);align-self:flex-start;border-bottom-left-radius:4px}
+.typing-dots{display:flex;gap:4px}
+.typing-dots span{width:7px;height:7px;background:var(--green);border-radius:50%;animation:typingBounce .6s ease infinite}
+.typing-dots span:nth-child(2){animation-delay:.15s}
+.typing-dots span:nth-child(3){animation-delay:.3s}
+@keyframes typingBounce{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
+.modal-input-area{display:flex;gap:8px;padding:12px 16px;background:rgba(255,255,255,.04);border-top:1px solid var(--glass-border)}
+.modal-input-area input{flex:1;padding:10px 14px;background:var(--glass);border:1px solid var(--glass-border);border-radius:20px;color:var(--text-bright);font-size:.88rem;outline:none}
+.modal-input-area input::placeholder{color:var(--text-dim)}
+.modal-input-area button{width:40px;height:40px;background:var(--green);border-radius:50%;color:#fff;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.modal-input-area button:hover{background:var(--green-mid)}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer{text-align:center;padding:40px 20px;color:var(--text-dim);font-size:.82rem;border-top:1px solid var(--glass-border);margin-top:60px}
+.footer a{color:var(--cyan)}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media(max-width:600px){
+  .industry-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .industry-card{padding:20px 12px}
+  .industry-icon{font-size:2rem}
+  .step-title{font-size:1.4rem}
+  .preview-layout{grid-template-columns:1fr}
+  .summary-panel{position:static}
+  .quote-range{font-size:1.4rem}
+  .nav-btn{padding:12px 24px;font-size:.88rem}
+  .header{padding:10px 16px}
+  .logo{font-size:1.2rem}
+  .pw-services-grid{grid-template-columns:repeat(2,1fr)}
+  .pw-testimonials-grid{grid-template-columns:1fr}
+  .pw-contact-grid{grid-template-columns:1fr}
+  .pw-nav-links a{display:none}
+  .pw-stats{gap:12px}
+}
+
+/* ============================================
+   EMBEDDED MODE (inside iframe)
+   ============================================ */
+body.embedded .header{display:none}
+body.embedded .footer{display:none}
+body.embedded .progress-wrap{top:0}
+body.embedded .steps-indicator{top:8px}
+body.embedded .main{padding-top:56px}
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     HEADER
+     ============================================ -->
+<header class="header">
+  <div style="display:flex;align-items:center">
+    <span class="logo">Vexio</span>
+    <span class="badge">Demo Builder</span>
+  </div>
+  <div style="font-size:.78rem;color:var(--text-dim)">vexio.mx</div>
+</header>
+
+<!-- Progress Bar -->
+<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+<div class="steps-indicator" id="stepsIndicator"></div>
+
+<!-- ============================================
+     MAIN CONTENT
+     ============================================ -->
+<main class="main">
+
+  <!-- STEP 1: Elige tu industria -->
+  <section class="step active" id="step1">
+    <h1 class="step-title">¿En qué industria está tu negocio?</h1>
+    <p class="step-sub">Selecciona la que mejor describa tu negocio para recomendarte el plan ideal.</p>
+    <div class="industry-grid" id="industryGrid"></div>
+    <div class="nav-buttons">
+      <button class="nav-btn next" id="btn1next" disabled onclick="goToStep(2)">Continuar →</button>
+    </div>
+  </section>
+
+  <!-- STEP 2: Personaliza -->
+  <section class="step" id="step2">
+    <h1 class="step-title">Personaliza tu sitio</h1>
+    <p class="step-sub">Cuéntanos sobre tu negocio y elige las funciones que necesitas.</p>
+    <div class="custom-section">
+      <div class="input-group">
+        <label for="bizName">¿Cómo se llama tu negocio?</label>
+        <input type="text" id="bizName" placeholder="Ej: La Casa del Sabor" maxlength="60">
+      </div>
+      <div class="input-group">
+        <label for="bizCity">¿En qué ciudad estás?</label>
+        <input type="text" id="bizCity" placeholder="Ej: Guadalajara, Puerto Vallarta..." maxlength="60">
+      </div>
+
+      <!-- Categoría A: Funciones Web -->
+      <div class="toggle-section">
+        <div class="toggle-section-title"><span class="icon">🌐</span> Funciones Web</div>
+        <div id="webToggles"></div>
+      </div>
+
+      <!-- Categoría B: WhatsApp & Automatización -->
+      <div class="toggle-section" style="margin-top:32px">
+        <div class="toggle-section-title" style="color:var(--green)"><span class="icon">💬</span> WhatsApp &amp; Automatización</div>
+        <div id="waToggles"></div>
+        <div id="chatDemo"></div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="nav-btn back" onclick="goToStep(1)">← Atrás</button>
+      <button class="nav-btn next" onclick="goToStep(3)">Ver preview →</button>
+    </div>
+  </section>
+
+  <!-- STEP 3: Preview -->
+  <section class="step" id="step3">
+    <h1 class="step-title">Tu sitio web, en preview</h1>
+    <p class="step-sub">Así se vería tu sitio. Revisa el resumen y ajusta lo que necesites.</p>
+    <div class="preview-layout">
+      <div class="summary-panel" id="summaryPanel"></div>
+      <div class="mockup-frame" id="mockupFrame"></div>
+    </div>
+    <div class="nav-buttons">
+      <button class="nav-btn back" onclick="goToStep(2)">← Atrás</button>
+      <button class="nav-btn next" onclick="goToStep(4)">Ver cotización →</button>
+    </div>
+  </section>
+
+  <!-- STEP 4: Cotización -->
+  <section class="step" id="step4">
+    <h1 class="step-title">Tu cotización lista</h1>
+    <p class="step-sub">Revisa el desglose y da el siguiente paso.</p>
+    <div id="quoteCard"></div>
+    <div class="nav-buttons" style="margin-top:30px">
+      <button class="nav-btn back" onclick="goToStep(3)">← Ajustar</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">Creado por <a href="https://vexio.mx" target="_blank">Vexio</a> · vexio.mx · Demo interactiva</footer>
+
+<!-- Chatbot Modal -->
+<div class="modal-overlay" id="chatModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-info">
+        <div class="modal-avatar">🤖</div>
+        <div class="modal-header-text">
+          <h3 id="modalBizName">Asistente Virtual</h3>
+          <p>En línea</p>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeChatModal()">✕</button>
+    </div>
+    <div class="modal-messages" id="modalMessages"></div>
+    <div class="modal-input-area">
+      <input type="text" id="modalInput" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter')sendModalMsg()">
+      <button onclick="sendModalMsg()">➤</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Embedded mode — when loaded inside iframe */
+if (new URLSearchParams(window.location.search).has('embedded')) {
+  document.body.classList.add('embedded');
+}
+
+/* ============================================
+   DATA
+   ============================================ */
+const INDUSTRIES = [
+  { id:'restaurante', icon:'🍽️', name:'Restaurante fino', plan:'profesional' },
+  { id:'taqueria',    icon:'🌮', name:'Taquería / Fonda', plan:'micro' },
+  { id:'estetica',    icon:'💆', name:'Estética / Salón',  plan:'basico' },
+  { id:'hotel',       icon:'🏨', name:'Hotel / Hospedaje', plan:'premium' },
+  { id:'clinica',     icon:'🥼', name:'Clínica / Consultorio', plan:'profesional' },
+  { id:'boutique',    icon:'👗', name:'Boutique / Tienda', plan:'ecommerce' },
+  { id:'taller',      icon:'🚗', name:'Taller / Servicio', plan:'basico' },
+  { id:'despacho',    icon:'⚖️', name:'Despacho / Consultora', plan:'profesional' }
+];
+
+const PLANS = {
+  micro:       { name:'Plan Micro',        price:3500  },
+  basico:      { name:'Plan Básico',       price:5500  },
+  profesional: { name:'Plan Profesional',  price:9000  },
+  premium:     { name:'Plan Premium',      price:16000 },
+  ecommerce:   { name:'Plan E-commerce',   price:25000 }
+};
+
+const PLAN_FEATURES = {
+  micro:       ['Landing page de una sección','Diseño responsivo','Optimización básica','Formulario de contacto','Botón de WhatsApp'],
+  basico:      ['Hasta 5 páginas','Diseño responsivo','SEO básico','Galería de imágenes','Formulario de contacto','Botón de WhatsApp','Mapa de Google'],
+  profesional: ['Hasta 10 páginas','Diseño premium','SEO avanzado','Sistema de reservas/citas','Blog integrado','Panel administrable','Botón de WhatsApp'],
+  premium:     ['Páginas ilimitadas','Diseño premium a medida','SEO avanzado + analytics','Blog + sistema de reservas','Versión multilingüe','Panel administrable','Soporte prioritario 6 meses'],
+  ecommerce:   ['Tienda online completa','Carrito de compras','Pasarela de pago','Gestión de inventario','Panel de administración','SEO para productos','Envíos y logística']
+};
+
+const WEB_EXTRAS = [
+  { id:'menu',    name:'Menú digital / Catálogo',    price:1500, desc:'Muestra tus productos o platillos con fotos, descripciones y precios actualizables.' },
+  { id:'citas',   name:'Sistema de citas / reservas', price:2000, desc:'Tus clientes agendan en línea — tú recibes notificación al instante.' },
+  { id:'ingles',  name:'Versión en inglés',           price:2500, desc:'Tu sitio traducido profesionalmente para captar clientes internacionales.' },
+  { id:'seo',     name:'SEO avanzado',                price:2000, desc:'Posicionamiento en Google, meta tags, velocidad y estructura optimizada.' },
+  { id:'tienda',  name:'Tienda online completa',      price:8000, desc:'Carrito de compras, pagos en línea y gestión de pedidos.' }
+];
+
+const WA_EXTRAS = [
+  { id:'wa-btn',      name:'Botón WhatsApp flotante', price:0,    desc:'Un botón fijo para que tus clientes te contacten con un clic.', included:true },
+  { id:'wa-api',      name:'WhatsApp API Business',   price:3500, desc:'Conectamos tu negocio a la API oficial de WhatsApp Business. Tus clientes reciben confirmaciones, recordatorios y respuestas automáticas sin que tengas que escribir manualmente.', badge:null },
+  { id:'wa-chatbot',  name:'Chatbot WhatsApp con IA', price:6500, desc:'Un asistente con inteligencia artificial atiende a tus clientes por WhatsApp a cualquier hora. Responde dudas, toma reservaciones y filtra leads automáticamente.', badge:'Nuevo' },
+  { id:'wa-broadcast',name:'WhatsApp Broadcast / Campañas', price:2500, desc:'Envía promociones, menús del día o recordatorios a cientos de clientes a la vez directamente por WhatsApp.', badge:null },
+  { id:'wa-crm',      name:'CRM básico integrado con WhatsApp', price:4000, desc:'Organiza todos tus contactos de WhatsApp en un panel. Ve el historial de cada cliente, etiquétalos y dale seguimiento a tus prospectos sin perder ninguno.', badge:'Nuevo' }
+];
+
+const CHAT_DEMOS = {
+  restaurante:[
+    {r:'user',t:'¿Tienen mesa disponible para 4 personas el sábado?'},
+    {r:'bot',t:'¡Hola! 😊 Sí tenemos disponibilidad el sábado. ¿A qué hora te gustaría?'},
+    {r:'user',t:'A las 8pm'},
+    {r:'bot',t:'Perfecto, te reservo mesa para 4 a las 8pm el sábado. ¿Me confirmas tu nombre?'}
+  ],
+  taqueria:[
+    {r:'user',t:'¿Hacen envíos a domicilio?'},
+    {r:'bot',t:'¡Claro! 🌮 Hacemos envíos en un radio de 5 km. ¿Qué te gustaría pedir?'},
+    {r:'user',t:'Quiero 10 tacos al pastor'},
+    {r:'bot',t:'¡Excelente elección! Son $180 MXN. ¿Me pasas tu dirección para enviártelos?'}
+  ],
+  estetica:[
+    {r:'user',t:'¿Tienen cita para corte y tinte mañana?'},
+    {r:'bot',t:'¡Hola! ✂️ Déjame revisar... tenemos a las 11am y 3pm disponibles mañana. ¿Cuál prefieres?'},
+    {r:'user',t:'A las 3pm'},
+    {r:'bot',t:'¡Listo! Te agendo corte y tinte mañana a las 3pm. Te esperamos 😊'}
+  ],
+  hotel:[
+    {r:'user',t:'¿Cuánto cuesta una habitación doble en Semana Santa?'},
+    {r:'bot',t:'¡Buenas tardes! 🏨 Tenemos habitaciones dobles desde $1,800 MXN/noche en esas fechas. ¿Cuántas noches planeas quedarte?'},
+    {r:'user',t:'3 noches'},
+    {r:'bot',t:'Perfecto, serían $5,400 MXN por 3 noches. ¿Quieres que reserve? Necesito tu nombre y un anticipo del 30%.'}
+  ],
+  clinica:[
+    {r:'user',t:'Quiero agendar una cita con el doctor'},
+    {r:'bot',t:'Con gusto te ayudo 🏥 ¿Es tu primera consulta o eres paciente frecuente?'},
+    {r:'user',t:'Primera vez'},
+    {r:'bot',t:'Tenemos disponibilidad el martes y jueves. ¿Cuál te acomoda mejor? La consulta de primera vez es de $800 MXN.'}
+  ],
+  boutique:[
+    {r:'user',t:'¿Tienen envíos a Guadalajara?'},
+    {r:'bot',t:'¡Sí! 📦 Hacemos envíos a toda la república. El tiempo de entrega es 3-5 días hábiles. ¿Qué producto te interesa?'},
+    {r:'user',t:'El vestido rojo de la publicación'},
+    {r:'bot',t:'¡Excelente gusto! Tenemos tallas S, M y L disponibles. ¿Cuál necesitas? Te lo enviamos con guía rastreable.'}
+  ],
+  taller:[
+    {r:'user',t:'¿Cuánto cuesta un servicio completo para Civic 2020?'},
+    {r:'bot',t:'¡Hola! 🚗 El servicio completo para Civic 2020 incluye aceite, filtros y revisión de frenos por $2,800 MXN. ¿Quieres agendar?'},
+    {r:'user',t:'Sí, ¿tienen espacio mañana?'},
+    {r:'bot',t:'Tenemos lugar a las 9am y 2pm mañana. ¿Cuál prefieres? El servicio toma aprox. 3 horas.'}
+  ],
+  despacho:[
+    {r:'user',t:'Necesito una consulta sobre registro de marca'},
+    {r:'bot',t:'¡Buen día! ⚖️ Con gusto te ayudamos. ¿Es una marca nueva o necesitas renovar un registro existente?'},
+    {r:'user',t:'Marca nueva'},
+    {r:'bot',t:'Perfecto. La consulta inicial es sin costo. ¿Te agendo una videollamada de 30 min esta semana? Tenemos disponibilidad martes y jueves.'}
+  ]
+};
+
+/* ============================================
+   INDUSTRY CONTENT — Full website data
+   ============================================ */
+const INDUSTRY_CONTENT = {
+  restaurante: {
+    navLinks: ['Inicio','Menú','Reservas','Nosotros','Contacto'],
+    hero: { h:'Cocina de Autor que Enamora', s:'Reserva tu mesa y vive una experiencia gastronómica única en el corazón de la ciudad.', cta1:'Reservar Mesa', cta2:'Ver Menú' },
+    stats: [{v:'4.9 ★',l:'Google Reviews'},{v:'500+',l:'Reseñas'},{v:'8',l:'Años'},{v:'50+',l:'Platillos'}],
+    services: [
+      {icon:'🍽️',title:'Menú Degustación',desc:'Experiencia de 7 tiempos con maridaje incluido.'},
+      {icon:'🍷',title:'Carta de Vinos',desc:'Etiquetas nacionales e importadas premium.'},
+      {icon:'🎉',title:'Eventos Privados',desc:'Salón exclusivo para hasta 40 personas.'},
+      {icon:'🛵',title:'Servicio a Domicilio',desc:'Tu comida favorita en la puerta de tu casa.'},
+      {icon:'👨‍🍳',title:"Chef's Table",desc:'Cena exclusiva con el chef en mesa privada.'},
+      {icon:'🎂',title:'Repostería Artesanal',desc:'Postres y pasteles hechos en casa a diario.'}
+    ],
+    testimonials: [
+      {stars:5,text:'La mejor experiencia gastronómica que hemos tenido. El servicio es impecable y cada platillo una obra de arte.',author:'María González',role:'Cliente frecuente'},
+      {stars:5,text:'Celebramos nuestro aniversario aquí y fue mágico. El menú degustación superó todas las expectativas.',author:'Carlos Ramírez',role:'Reseña Google'},
+      {stars:5,text:'Ambiente elegante sin ser pretencioso. Los platillos son creativos y el staff muy atento.',author:'Ana Martínez',role:'Food blogger'}
+    ],
+    contact:{address:'Av. Principal #123, Centro',phone:'(322) 123-4567',email:'reservas@tunegocio.com',hours:'Lun-Dom: 1:00 PM - 11:00 PM'}
+  },
+  taqueria: {
+    navLinks: ['Inicio','Menú','Pedidos','Sucursales','Contacto'],
+    hero: { h:'Los Mejores Tacos de la Ciudad', s:'Pide para llevar o ven a disfrutar nuestro sazón auténtico.', cta1:'Hacer Pedido', cta2:'Ver Menú' },
+    stats: [{v:'4.8 ★',l:'Google Reviews'},{v:'1,200+',l:'Reseñas'},{v:'15+',l:'Años'},{v:'30+',l:'Variedades'}],
+    services: [
+      {icon:'🌮',title:'Tacos al Pastor',desc:'Nuestro clásico con piña y cilantro fresco.'},
+      {icon:'🫔',title:'Gringas y Volcanes',desc:'Combinaciones irresistibles con queso fundido.'},
+      {icon:'🧀',title:'Quesadillas',desc:'De maíz o harina, con el relleno que prefieras.'},
+      {icon:'🥤',title:'Aguas Frescas',desc:'Horchata, jamaica, limón y más sabores.'},
+      {icon:'🛵',title:'Envío a Domicilio',desc:'Pedidos rápidos en un radio de 5 km.'},
+      {icon:'🎊',title:'Catering y Eventos',desc:'Taquizas para fiestas y reuniones.'}
+    ],
+    testimonials: [
+      {stars:5,text:'Los tacos al pastor son los mejores que he probado. La salsa roja es espectacular.',author:'Roberto Hernández',role:'Cliente habitual'},
+      {stars:5,text:'Pedimos para la oficina y llegó rapidísimo. Todo fresco y delicioso. Super recomendados.',author:'Laura Vega',role:'Reseña Google'},
+      {stars:4,text:'Muy buen sazón y precios accesibles. Las gringas son adictivas, siempre regresamos.',author:'Pedro Sánchez',role:'Foodie local'}
+    ],
+    contact:{address:'Calle 5 de Mayo #45, Centro',phone:'(322) 987-6543',email:'pedidos@tunegocio.com',hours:'Lun-Dom: 10:00 AM - 12:00 AM'}
+  },
+  estetica: {
+    navLinks: ['Inicio','Servicios','Galería','Citas','Contacto'],
+    hero: { h:'Tu Belleza, Nuestra Pasión', s:'Agenda tu cita y transforma tu look con los mejores estilistas de la ciudad.', cta1:'Agendar Cita', cta2:'Ver Servicios' },
+    stats: [{v:'4.9 ★',l:'Google Reviews'},{v:'800+',l:'Clientas'},{v:'10+',l:'Años'},{v:'20+',l:'Servicios'}],
+    services: [
+      {icon:'✂️',title:'Corte y Estilo',desc:'Cortes modernos adaptados a tu tipo de rostro.'},
+      {icon:'🎨',title:'Color y Tinte',desc:'Técnicas balayage, mechas y color completo.'},
+      {icon:'💅',title:'Manicure y Pedicure',desc:'Uñas acrílicas, gel y diseños personalizados.'},
+      {icon:'✨',title:'Tratamiento Facial',desc:'Limpieza profunda, hidratación y rejuvenecimiento.'},
+      {icon:'💄',title:'Maquillaje Profesional',desc:'Para eventos, bodas y sesiones fotográficas.'},
+      {icon:'💆',title:'Tratamientos Capilares',desc:'Keratina, botox capilar y reparación profunda.'}
+    ],
+    testimonials: [
+      {stars:5,text:'Mi estilista es increíble. Siempre sale mi cabello exactamente como lo quiero. 100% recomendado.',author:'Sofía López',role:'Clienta frecuente'},
+      {stars:5,text:'Me hicieron el balayage perfecto. El ambiente es súper lindo y todas muy profesionales.',author:'Daniela Torres',role:'Reseña Google'},
+      {stars:5,text:'Las uñas me duraron 3 semanas perfectas. Excelente trabajo y muy buen trato.',author:'Valentina Ruiz',role:'Reseña Instagram'}
+    ],
+    contact:{address:'Blvd. de la Belleza #78, Zona Centro',phone:'(322) 555-1234',email:'citas@tunegocio.com',hours:'Lun-Sáb: 9:00 AM - 7:00 PM'}
+  },
+  hotel: {
+    navLinks: ['Inicio','Habitaciones','Amenidades','Galería','Reservar'],
+    hero: { h:'Tu Refugio Perfecto te Espera', s:'Reserva directo y obtén la mejor tarifa garantizada con vista panorámica.', cta1:'Reservar Ahora', cta2:'Ver Habitaciones' },
+    stats: [{v:'4.8 ★',l:'Google Reviews'},{v:'2,000+',l:'Huéspedes'},{v:'15+',l:'Años'},{v:'50+',l:'Habitaciones'}],
+    services: [
+      {icon:'🛏️',title:'Suite Premium',desc:'Habitación de lujo con terraza y vista al mar.'},
+      {icon:'🌅',title:'Vista Panorámica',desc:'Todas las habitaciones con vistas espectaculares.'},
+      {icon:'🍳',title:'Restaurante Gourmet',desc:'Desayuno buffet incluido y cena a la carta.'},
+      {icon:'🧖',title:'Spa y Wellness',desc:'Masajes, sauna y tratamientos relajantes.'},
+      {icon:'🏊',title:'Alberca Infinity',desc:'Alberca panorámica con servicio de bar.'},
+      {icon:'🗺️',title:'Tours y Actividades',desc:'Excursiones guiadas y deportes acuáticos.'}
+    ],
+    testimonials: [
+      {stars:5,text:'Una experiencia increíble. Las habitaciones son hermosas y el servicio de primera clase.',author:'Familia Rodríguez',role:'Viajeros'},
+      {stars:5,text:'El spa es de lo mejor que hemos probado. Volveremos sin duda el próximo año.',author:'Patricia y Miguel',role:'Reseña Booking'},
+      {stars:5,text:'Relación calidad-precio excelente. El desayuno buffet es espectacular.',author:'James Wilson',role:'Turista internacional'}
+    ],
+    contact:{address:'Blvd. Costero #500, Zona Hotelera',phone:'(322) 200-3000',email:'reservas@tunegocio.com',hours:'Recepción 24 horas'}
+  },
+  clinica: {
+    navLinks: ['Inicio','Especialidades','Doctores','Citas','Contacto'],
+    hero: { h:'Tu Salud en las Mejores Manos', s:'Agenda tu consulta con especialistas certificados y tecnología de vanguardia.', cta1:'Agendar Cita', cta2:'Especialidades' },
+    stats: [{v:'4.9 ★',l:'Google Reviews'},{v:'3,000+',l:'Pacientes'},{v:'12+',l:'Años'},{v:'15+',l:'Especialistas'}],
+    services: [
+      {icon:'🩺',title:'Medicina General',desc:'Consultas integrales y check-ups completos.'},
+      {icon:'🦷',title:'Odontología',desc:'Limpieza, ortodoncia y estética dental.'},
+      {icon:'👶',title:'Pediatría',desc:'Atención especializada para los más pequeños.'},
+      {icon:'🧴',title:'Dermatología',desc:'Tratamientos para piel, cabello y uñas.'},
+      {icon:'🥗',title:'Nutrición',desc:'Planes alimenticios personalizados.'},
+      {icon:'🔬',title:'Laboratorio',desc:'Estudios clínicos con resultados en 24 hrs.'}
+    ],
+    testimonials: [
+      {stars:5,text:'Excelente atención médica. El doctor se tomó el tiempo de explicarme todo con detalle.',author:'Fernando Díaz',role:'Paciente'},
+      {stars:5,text:'Muy buenas instalaciones y equipo moderno. La atención es muy profesional y puntual.',author:'Isabel Moreno',role:'Reseña Google'},
+      {stars:5,text:'Encontré al mejor dentista aquí. Trabajo impecable y sin dolor. Muy recomendado.',author:'Ricardo Luna',role:'Paciente dental'}
+    ],
+    contact:{address:'Av. Médica #200, Col. Doctores',phone:'(322) 300-4000',email:'citas@tunegocio.com',hours:'Lun-Vie: 8:00 AM - 8:00 PM'}
+  },
+  boutique: {
+    navLinks: ['Inicio','Catálogo','Novedades','Tienda','Contacto'],
+    hero: { h:'Moda que Define tu Estilo', s:'Descubre nuestra nueva colección y compra en línea con envío a todo México.', cta1:'Comprar Ahora', cta2:'Ver Catálogo' },
+    stats: [{v:'4.8 ★',l:'Google Reviews'},{v:'1,500+',l:'Clientas'},{v:'5+',l:'Años'},{v:'200+',l:'Productos'}],
+    services: [
+      {icon:'👗',title:'Vestidos',desc:'Casuales, de fiesta y para toda ocasión.'},
+      {icon:'👜',title:'Bolsos y Accesorios',desc:'Complementos que elevan cualquier outfit.'},
+      {icon:'👠',title:'Calzado',desc:'Tacones, flats, sneakers y sandalias.'},
+      {icon:'💎',title:'Joyería',desc:'Piezas artesanales y de diseñador.'},
+      {icon:'👔',title:'Ropa Casual',desc:'Básicos y prendas de temporada.'},
+      {icon:'📦',title:'Envío Express',desc:'Entrega en 1-3 días a todo el país.'}
+    ],
+    testimonials: [
+      {stars:5,text:'La calidad de la ropa es increíble y los precios son muy accesibles. Mi tienda favorita.',author:'Camila Flores',role:'Clienta VIP'},
+      {stars:5,text:'Pedí un vestido online y llegó en 2 días. Exactamente como en las fotos. Excelente.',author:'Mariana Castro',role:'Reseña Google'},
+      {stars:4,text:'Gran variedad de estilos. La atención por WhatsApp es muy rápida y personalizada.',author:'Regina Ortiz',role:'Clienta nueva'}
+    ],
+    contact:{address:'Plaza Central Local 15, Centro',phone:'(322) 400-5000',email:'ventas@tunegocio.com',hours:'Lun-Sáb: 10:00 AM - 8:00 PM'}
+  },
+  taller: {
+    navLinks: ['Inicio','Servicios','Precios','Agendar','Contacto'],
+    hero: { h:'Expertos en el Cuidado de tu Auto', s:'Agenda tu servicio y maneja con confianza. Mecánicos certificados y garantía real.', cta1:'Agendar Servicio', cta2:'Ver Precios' },
+    stats: [{v:'4.8 ★',l:'Google Reviews'},{v:'2,000+',l:'Autos atendidos'},{v:'20+',l:'Años'},{v:'100%',l:'Garantía'}],
+    services: [
+      {icon:'🔧',title:'Servicio Completo',desc:'Cambio de aceite, filtros y revisión general.'},
+      {icon:'🛞',title:'Frenos y Suspensión',desc:'Diagnóstico y reparación profesional.'},
+      {icon:'⚙️',title:'Transmisión',desc:'Reparación manual y automática.'},
+      {icon:'🔌',title:'Sistema Eléctrico',desc:'Diagnóstico computarizado y reparación.'},
+      {icon:'❄️',title:'Aire Acondicionado',desc:'Recarga de gas, limpieza y reparación.'},
+      {icon:'🔍',title:'Diagnóstico Digital',desc:'Escáner completo con reporte detallado.'}
+    ],
+    testimonials: [
+      {stars:5,text:'Excelente servicio y precios justos. Mi carro quedó como nuevo después del servicio.',author:'Jorge Mendoza',role:'Cliente habitual'},
+      {stars:5,text:'Muy honestos con el diagnóstico. No te venden cosas que no necesitas. 100% recomendados.',author:'Luis Herrera',role:'Reseña Google'},
+      {stars:5,text:'Repararon mi transmisión cuando otros talleres no podían. Trabajo profesional y con garantía.',author:'Miguel Ángel',role:'Cliente referido'}
+    ],
+    contact:{address:'Av. Mecánica #300, Zona Industrial',phone:'(322) 500-6000',email:'citas@tunegocio.com',hours:'Lun-Sáb: 8:00 AM - 6:00 PM'}
+  },
+  despacho: {
+    navLinks: ['Inicio','Áreas','Equipo','Casos de Éxito','Contacto'],
+    hero: { h:'Soluciones Legales a tu Medida', s:'Consulta con expertos y protege lo que más importa. Primera consulta sin costo.', cta1:'Consulta Gratis', cta2:'Nuestras Áreas' },
+    stats: [{v:'4.9 ★',l:'Google Reviews'},{v:'500+',l:'Casos resueltos'},{v:'15+',l:'Años'},{v:'98%',l:'Éxito'}],
+    services: [
+      {icon:'🏢',title:'Derecho Corporativo',desc:'Constitución de empresas y contratos.'},
+      {icon:'™️',title:'Propiedad Intelectual',desc:'Registro de marcas y patentes.'},
+      {icon:'📊',title:'Derecho Fiscal',desc:'Planeación fiscal y defensa ante el SAT.'},
+      {icon:'👥',title:'Derecho Laboral',desc:'Contratos, despidos y conflictos laborales.'},
+      {icon:'🏠',title:'Derecho Inmobiliario',desc:'Compraventa, arrendamiento y escrituración.'},
+      {icon:'⚖️',title:'Litigio Civil',desc:'Representación legal en juicios civiles.'}
+    ],
+    testimonials: [
+      {stars:5,text:'Resolvieron un caso complicado de propiedad intelectual de forma rápida y profesional.',author:'Ing. Roberto Paz',role:'CEO, Tech Solutions'},
+      {stars:5,text:'Excelente asesoría fiscal. Me ahorraron muchísimo y todo en regla con el SAT.',author:'Dra. Carmen Solís',role:'Empresaria'},
+      {stars:5,text:'Muy profesionales y siempre disponibles. La mejor decisión que tomé para mi empresa.',author:'Lic. Fernando Rivas',role:'Director General'}
+    ],
+    contact:{address:'Torre Corporativa, Piso 8, Centro',phone:'(322) 600-7000',email:'contacto@tunegocio.com',hours:'Lun-Vie: 9:00 AM - 6:00 PM'}
+  }
+};
+
+const INDUSTRY_THEMES = {
+  restaurante: { accent:'#C9A96E', accent2:'#8C4A5A', emojis:['🍷','🍽️','🥂','🍝','🫒','🍰'] },
+  taqueria:    { accent:'#D07A4A', accent2:'#C9A96E', emojis:['🌮','🌶️','🫘','🥑','🍋','🔥'] },
+  estetica:    { accent:'#C88EA2', accent2:'#A07EB8', emojis:['✂️','💅','💄','✨','💆','🌸'] },
+  hotel:       { accent:'#5AACB5', accent2:'#4A6FA5', emojis:['🏖️','🌅','🌴','🏊','🍹','☀️'] },
+  clinica:     { accent:'#6AB5A5', accent2:'#5A8FAA', emojis:['🩺','💊','🏥','❤️','🩹','🔬'] },
+  boutique:    { accent:'#A882B8', accent2:'#C88EA2', emojis:['👗','👠','💎','🛍️','✨','🌹'] },
+  taller:      { accent:'#7A9BAA', accent2:'#B0966A', emojis:['🔧','⚙️','🚗','🛞','🔩','💪'] },
+  despacho:    { accent:'#5A7FB8', accent2:'#C9AA6E', emojis:['⚖️','📜','🏛️','📊','🤝','🎯'] }
+};
+
+const DELIVERY = { micro:'1-2 semanas', basico:'2-3 semanas', profesional:'3-4 semanas', premium:'4-6 semanas', ecommerce:'5-7 semanas' };
+const WA_PHONE = '523222440437';
+
+/* ============================================
+   STATE
+   ============================================ */
+let state = {
+  step: 1,
+  industry: null,
+  bizName: '',
+  bizCity: '',
+  webExtras: {},
+  waExtras: {}
+};
+
+/* ============================================
+   INIT
+   ============================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  renderStepsIndicator();
+  renderIndustryGrid();
+  renderToggles();
+
+  // Create expand overlay
+  const expandOverlay = document.createElement('div');
+  expandOverlay.id = 'expandOverlay';
+  expandOverlay.className = 'expand-overlay';
+  expandOverlay.innerHTML = '<button class="expand-close" onclick="toggleExpandPreview()">✕</button>';
+  expandOverlay.addEventListener('click', (e) => {
+    if (e.target === expandOverlay) toggleExpandPreview();
+  });
+  document.body.appendChild(expandOverlay);
+});
+
+/* ============================================
+   STEPS NAVIGATION
+   ============================================ */
+function goToStep(n) {
+  if (n === 2 && !state.industry) return;
+  state.step = n;
+  state.bizName = document.getElementById('bizName').value.trim();
+  state.bizCity = document.getElementById('bizCity').value.trim();
+
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+
+  document.getElementById('progressBar').style.width = (n * 25) + '%';
+  renderStepsIndicator();
+
+  if (n === 3) renderPreview();
+  if (n === 4) renderQuote();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderStepsIndicator() {
+  const labels = ['Industria', 'Personaliza', 'Preview', 'Cotización'];
+  const el = document.getElementById('stepsIndicator');
+  el.innerHTML = labels.map((l, i) => {
+    const num = i + 1;
+    const cls = num < state.step ? 'done' : num === state.step ? 'active' : '';
+    return (i > 0 ? '<div class="step-line"></div>' : '') +
+      `<div class="step-dot ${cls}"><span class="dot"></span>${l}</div>`;
+  }).join('');
+}
+
+/* ============================================
+   STEP 1 — INDUSTRY GRID
+   ============================================ */
+function renderIndustryGrid() {
+  const grid = document.getElementById('industryGrid');
+  grid.innerHTML = INDUSTRIES.map(ind => `
+    <div class="industry-card" data-id="${ind.id}" onclick="selectIndustry('${ind.id}')">
+      <div class="industry-icon">${ind.icon}</div>
+      <div class="industry-name">${ind.name}</div>
+      <div class="industry-plan">→ ${PLANS[ind.plan].name}</div>
+    </div>
+  `).join('');
+}
+
+function selectIndustry(id) {
+  state.industry = id;
+  document.querySelectorAll('.industry-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.id === id);
+  });
+  document.getElementById('btn1next').disabled = false;
+}
+
+/* ============================================
+   STEP 2 — TOGGLES
+   ============================================ */
+function renderToggles() {
+  const webEl = document.getElementById('webToggles');
+  webEl.innerHTML = WEB_EXTRAS.map(ex => `
+    <div class="toggle-card">
+      <div class="toggle-info">
+        <div class="toggle-name">${ex.name}</div>
+        <div class="toggle-price">+$${ex.price.toLocaleString()} MXN</div>
+        <div class="toggle-desc">${ex.desc}</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" data-id="${ex.id}" data-cat="web" onchange="toggleExtra(this)">
+        <span class="slider"></span>
+      </label>
+    </div>
+  `).join('');
+
+  const waEl = document.getElementById('waToggles');
+  waEl.innerHTML = WA_EXTRAS.map(ex => {
+    const isIncluded = ex.included;
+    const badgeHtml = isIncluded ? '<span class="badge-included">Incluido</span>' :
+      ex.badge ? `<span class="badge-new">${ex.badge}</span>` : '';
+    const switchCls = isIncluded ? 'switch green disabled' : 'switch green';
+    const checked = isIncluded ? 'checked disabled' : '';
+    return `
+    <div class="toggle-card is-whatsapp">
+      <div class="toggle-info">
+        <div class="toggle-name">${ex.name} ${badgeHtml}</div>
+        ${ex.price > 0 ? `<div class="toggle-price" style="color:var(--green)">+$${ex.price.toLocaleString()} MXN</div>` : ''}
+        <div class="toggle-desc">${ex.desc}</div>
+      </div>
+      <label class="${switchCls}">
+        <input type="checkbox" data-id="${ex.id}" data-cat="wa" ${checked} onchange="toggleExtra(this)">
+        <span class="slider"></span>
+      </label>
+    </div>`;
+  }).join('');
+}
+
+function toggleExtra(el) {
+  const id = el.dataset.id;
+  const cat = el.dataset.cat;
+  if (cat === 'web') {
+    state.webExtras[id] = el.checked;
+  } else {
+    state.waExtras[id] = el.checked;
+  }
+  if (id === 'wa-chatbot') renderChatDemo();
+}
+
+function renderChatDemo() {
+  const el = document.getElementById('chatDemo');
+  if (!state.waExtras['wa-chatbot']) { el.innerHTML = ''; return; }
+  const indKey = state.industry || 'restaurante';
+  const msgs = CHAT_DEMOS[indKey] || CHAT_DEMOS.restaurante;
+  el.innerHTML = `
+    <div class="chat-demo">
+      <div class="chat-demo-title">🤖 Mini-demo: así atendería el chatbot a tus clientes</div>
+      ${msgs.map(m => `<div class="chat-bubble ${m.r}">${m.t}</div>`).join('')}
+    </div>`;
+}
+
+/* ============================================
+   STEP 3 — PREVIEW (Real website)
+   ============================================ */
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1,3), 16);
+  const g = parseInt(hex.slice(3,5), 16);
+  const b = parseInt(hex.slice(5,7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function getSelectedPlan() {
+  const ind = INDUSTRIES.find(i => i.id === state.industry);
+  return ind ? ind.plan : 'basico';
+}
+
+function calcPrices() {
+  const planKey = getSelectedPlan();
+  const base = PLANS[planKey].price;
+  let webTotal = 0, waTotal = 0;
+  WEB_EXTRAS.forEach(ex => { if (state.webExtras[ex.id]) webTotal += ex.price; });
+  WA_EXTRAS.forEach(ex => { if (state.waExtras[ex.id] && !ex.included) waTotal += ex.price; });
+  return { base, webTotal, waTotal, total: base + webTotal + waTotal, planKey };
+}
+
+function renderPreview() {
+  const p = calcPrices();
+  const planKey = p.planKey;
+  const planName = PLANS[planKey].name;
+  const features = PLAN_FEATURES[planKey];
+  const bizName = state.bizName || 'Tu Negocio';
+  const bizCity = state.bizCity || 'México';
+  const hasWaExtras = WA_EXTRAS.some(ex => state.waExtras[ex.id] && !ex.included);
+  const showWaWidget = state.waExtras['wa-api'] || state.waExtras['wa-chatbot'] || state.waExtras['wa-btn'];
+  const indKey = state.industry || 'restaurante';
+  const content = INDUSTRY_CONTENT[indKey] || INDUSTRY_CONTENT.restaurante;
+  const theme = INDUSTRY_THEMES[indKey] || INDUSTRY_THEMES.restaurante;
+
+  // ===== Summary panel =====
+  let summaryHtml = `
+    <span class="summary-badge">Plan Recomendado</span>
+    <div class="summary-plan">${planName}</div>
+    <div class="summary-price-base">Desde $${p.base.toLocaleString()} MXN</div>
+    <ul class="summary-list">
+      ${features.map(f => `<li>${f}</li>`).join('')}
+    </ul>`;
+
+  const selWeb = WEB_EXTRAS.filter(ex => state.webExtras[ex.id]);
+  if (selWeb.length) {
+    summaryHtml += `<div class="summary-divider"></div>
+      <div style="font-size:.85rem;font-weight:700;color:var(--text-bright);margin-bottom:8px">➕ Extras web</div>
+      <ul class="summary-list">${selWeb.map(ex => `<li>${ex.name} <span style="color:var(--cyan);margin-left:auto;font-weight:600">+$${ex.price.toLocaleString()}</span></li>`).join('')}</ul>`;
+  }
+
+  if (hasWaExtras) {
+    const selWa = WA_EXTRAS.filter(ex => state.waExtras[ex.id] && !ex.included);
+    summaryHtml += `
+      <div class="summary-divider"></div>
+      <div class="wa-extras-section">
+        <div class="wa-extras-title">🤖 Automatización WhatsApp</div>
+        <ul class="wa-extras-list">
+          ${selWa.map(ex => `<li><span>${ex.name}</span><span class="price">+$${ex.price.toLocaleString()}</span></li>`).join('')}
+        </ul>
+      </div>`;
+  }
+
+  summaryHtml += `
+    <div class="price-breakdown">
+      <div class="price-row"><span class="label">Subtotal sitio web</span><span class="amount">$${(p.base + p.webTotal).toLocaleString()}</span></div>
+      ${p.waTotal > 0 ? `<div class="price-row"><span class="label">Subtotal WhatsApp & IA</span><span class="amount" style="color:var(--green)">$${p.waTotal.toLocaleString()}</span></div>` : ''}
+      <div class="price-row total"><span class="label">TOTAL</span><span class="amount">$${p.total.toLocaleString()} MXN</span></div>
+    </div>`;
+
+  document.getElementById('summaryPanel').innerHTML = summaryHtml;
+
+  // ===== Mockup — Full website preview =====
+  const domain = bizName.toLowerCase().replace(/[^a-záéíóúñü0-9]/gi, '').slice(0, 18);
+  const starsHtml = (n) => '★'.repeat(n) + '☆'.repeat(5 - n);
+
+  let mockHtml = `
+    <div class="mockup-browser-bar">
+      <div class="mockup-dots"><span></span><span></span><span></span></div>
+      <div class="mockup-url"><span class="mockup-lock">🔒</span> https://${domain || 'tunegocio'}.com.mx</div>
+      <button class="mockup-expand-btn" onclick="toggleExpandPreview()" title="Expandir preview">⛶</button>
+    </div>
+    <div class="mockup-body" id="mockupBody">
+      <div class="pw-site">
+
+        <!-- Navbar -->
+        <nav class="pw-nav" id="pwNav">
+          <div class="pw-nav-logo" style="color:${theme.accent}">${bizName}</div>
+          <div class="pw-nav-links">
+            ${content.navLinks.map(l => `<a>${l}</a>`).join('')}
+            <a class="pw-nav-cta" style="background:${theme.accent}">${content.hero.cta1}</a>
+          </div>
+        </nav>
+
+        <!-- Hero -->
+        <section class="pw-hero">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,${hexToRgba(theme.accent,.08)} 0%,transparent 60%);pointer-events:none"></div>
+          <h1 class="pw-fade-in">${content.hero.h}</h1>
+          <p class="pw-fade-in">${content.hero.s}</p>
+          <div class="pw-hero-btns pw-fade-in">
+            <button class="pw-btn-primary" style="background:${theme.accent}">${content.hero.cta1}</button>
+            <button class="pw-btn-secondary">${content.hero.cta2}</button>
+          </div>
+          <div class="pw-stats pw-fade-in">
+            ${content.stats.map(s => `<div class="pw-stat" style="border-color:${hexToRgba(theme.accent,.12)}"><div class="pw-stat-value pw-count-up" style="color:${theme.accent}" data-value="${s.v}">${s.v}</div><div class="pw-stat-label">${s.l}</div></div>`).join('')}
+          </div>
+        </section>
+
+        <!-- Trust bar -->
+        <div class="pw-trust-bar pw-fade-in">
+          <div class="pw-trust-bar-text">Más de ${content.stats[1] ? content.stats[1].v : '500+'} clientes confían en nosotros</div>
+          <div class="pw-trust-logos">
+            ${['Brand','Corp','Group','Co.','Labs'].map(n => `<div class="pw-trust-logo" style="border-color:${hexToRgba(theme.accent,.1)}">${n}</div>`).join('')}
+          </div>
+        </div>
+
+        <!-- Services -->
+        <section class="pw-services">
+          <div class="pw-section-label pw-fade-in" style="color:${theme.accent}">Nuestros Servicios</div>
+          <div class="pw-section-title pw-fade-in">Lo que ofrecemos</div>
+          <div class="pw-section-divider" style="background:${theme.accent}"></div>
+          <div class="pw-services-grid">
+            ${content.services.map((s, i) => `
+              <div class="pw-service-card pw-fade-in" style="transition-delay:${i * 0.07}s;--pw-hover-accent:${theme.accent}" onmouseenter="this.style.borderBottomColor='${theme.accent}'" onmouseleave="this.style.borderBottomColor=''">
+                <div class="pw-service-icon-bg" style="background:${hexToRgba(theme.accent,.12)}">${s.icon}</div>
+                <div class="pw-service-title">${s.title}</div>
+                <div class="pw-service-desc">${s.desc}</div>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="pw-testimonials">
+          <div class="pw-section-label pw-fade-in" style="color:${theme.accent}">Testimonios</div>
+          <div class="pw-section-title pw-fade-in">Lo que dicen nuestros clientes</div>
+          <div class="pw-section-divider" style="background:${theme.accent}"></div>
+          <div class="pw-testimonials-grid">
+            ${content.testimonials.map(t => {
+              const initials = t.author.split(' ').map(w => w[0]).join('').slice(0, 2);
+              return `
+              <div class="pw-testimonial-card pw-fade-in">
+                <span class="pw-testimonial-quote" style="color:${theme.accent}">"</span>
+                <div class="pw-testimonial-stars">${starsHtml(t.stars)}</div>
+                <div class="pw-testimonial-text">"${t.text}"</div>
+                <div class="pw-testimonial-top">
+                  <div class="pw-testimonial-avatar" style="background:${theme.accent}">${initials}</div>
+                  <div class="pw-testimonial-author-wrap">
+                    <div class="pw-testimonial-author">${t.author}</div>
+                    <div class="pw-testimonial-role">${t.role}</div>
+                  </div>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        </section>
+
+        <!-- Contact -->
+        <section class="pw-contact">
+          <div class="pw-section-label pw-fade-in" style="color:${theme.accent}">Contacto</div>
+          <div class="pw-section-title pw-fade-in">¿Listo para comenzar?</div>
+          <div class="pw-section-divider" style="background:${theme.accent}"></div>
+          <div class="pw-contact-grid pw-fade-in">
+            <div class="pw-contact-info">
+              <div class="pw-contact-item"><span class="pw-contact-icon-bg" style="background:${hexToRgba(theme.accent,.15)}">📍</span> ${content.contact.address}, ${bizCity}</div>
+              <div class="pw-contact-item"><span class="pw-contact-icon-bg" style="background:${hexToRgba(theme.accent,.15)}">📞</span> ${content.contact.phone}</div>
+              <div class="pw-contact-item"><span class="pw-contact-icon-bg" style="background:${hexToRgba(theme.accent,.15)}">✉️</span> ${content.contact.email}</div>
+              <div class="pw-contact-item"><span class="pw-contact-icon-bg" style="background:${hexToRgba(theme.accent,.15)}">🕐</span> ${content.contact.hours}</div>
+              <div class="pw-faux-map">
+                <svg viewBox="0 0 260 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="260" height="74" fill="rgba(0,0,0,.01)"/>
+                  ${Array.from({length:10},(_,i)=>`<line x1="${i*28}" y1="0" x2="${i*28}" y2="74" stroke="rgba(0,0,0,.05)" stroke-width="0.5"/>`).join('')}
+                  ${Array.from({length:4},(_,i)=>`<line x1="0" y1="${i*20}" x2="260" y2="${i*20}" stroke="rgba(0,0,0,.05)" stroke-width="0.5"/>`).join('')}
+                  <g class="pw-map-pin" transform="translate(130,28)">
+                    <ellipse cx="0" cy="14" rx="6" ry="2" fill="rgba(0,0,0,.08)"/>
+                    <path d="M0-8C-4.4-8-8-4.4-8 0c0 5.3 8 14 8 14s8-8.7 8-14c0-4.4-3.6-8-8-8z" fill="${theme.accent}" opacity=".85"/>
+                    <circle cx="0" cy="0" r="3" fill="#fff" opacity=".95"/>
+                  </g>
+                </svg>
+              </div>
+            </div>
+            <div class="pw-contact-form">
+              <input type="text" placeholder="Tu nombre" disabled>
+              <input type="text" placeholder="Tu email" disabled>
+              <input type="text" placeholder="Teléfono" disabled>
+              <textarea placeholder="¿En qué podemos ayudarte?" disabled></textarea>
+              <button class="pw-form-btn" style="background:${theme.accent}">Enviar mensaje →</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- CTA Banner -->
+        <section class="pw-cta-banner pw-fade-in" style="background:${hexToRgba(theme.accent,.08)}">
+          <h3>¿Listo para transformar tu negocio?</h3>
+          <p>Contáctanos hoy y lleva tu presencia digital al siguiente nivel</p>
+          <button class="pw-cta-btn" style="background:${theme.accent}">${content.hero.cta1} →</button>
+        </section>
+
+        <!-- Footer -->
+        <footer class="pw-footer">
+          <div class="pw-footer-brand" style="color:${theme.accent}">${bizName}</div>
+          <div class="pw-footer-links">
+            ${content.navLinks.slice(0, 4).map(l => `<a>${l}</a>`).join('')}
+          </div>
+          <div class="pw-social-row">
+            ${['𝕏','in','f','▶','📷'].map(ic => `<span class="pw-social-dot">${ic}</span>`).join('')}
+          </div>
+          <div class="pw-footer-copy">© 2026 ${bizName} · Todos los derechos reservados</div>
+          <div class="pw-footer-credit">Creado por Vexio</div>
+        </footer>
+
+        ${showWaWidget ? `
+        <!-- WhatsApp Widget -->
+        <div class="pw-wa-widget">
+          <div class="pw-wa-inner">
+            <div class="pw-wa-tooltip">¡Hola! ¿En qué podemos ayudarte?</div>
+            <button class="pw-wa-btn">💬</button>
+          </div>
+        </div>` : ''}
+
+      </div>
+    </div>`;
+
+  document.getElementById('mockupFrame').innerHTML = mockHtml;
+
+  // Setup scroll animations
+  requestAnimationFrame(() => initPreviewAnimations());
+}
+
+function initPreviewAnimations() {
+  const mockupBody = document.getElementById('mockupBody');
+  if (!mockupBody) return;
+
+  const nav = document.getElementById('pwNav');
+
+  // Navbar scroll effect
+  mockupBody.addEventListener('scroll', () => {
+    if (nav) {
+      nav.classList.toggle('pw-scrolled', mockupBody.scrollTop > 30);
+    }
+  });
+
+  // Assign stagger delays to fade-in elements
+  const fadeEls = mockupBody.querySelectorAll('.pw-fade-in');
+  fadeEls.forEach((el, i) => {
+    if (!el.style.transitionDelay) {
+      el.style.transitionDelay = (i * 0.05) + 's';
+    }
+  });
+
+  // IntersectionObserver for fade-in animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('pw-visible');
+        // Trigger count-up for stat values inside this element
+        entry.target.querySelectorAll('.pw-count-up').forEach(el => animateCountUp(el));
+        if (entry.target.classList.contains('pw-count-up')) animateCountUp(entry.target);
+      }
+    });
+  }, {
+    root: mockupBody,
+    threshold: 0.15,
+    rootMargin: '0px 0px -30px 0px'
+  });
+
+  fadeEls.forEach(el => observer.observe(el));
+}
+
+function animateCountUp(el) {
+  if (el.dataset.counted) return;
+  el.dataset.counted = '1';
+  const raw = el.dataset.value || el.textContent;
+  // Extract leading number (e.g. "4.9" from "4.9 ★", "500+" from "500+", "1,200+" etc.)
+  const match = raw.match(/^([\d,]+\.?\d*)/);
+  if (!match) return;
+  const numStr = match[1].replace(/,/g, '');
+  const target = parseFloat(numStr);
+  if (isNaN(target) || target === 0) return;
+  const suffix = raw.slice(match[0].length);
+  const hasComma = match[1].includes(',');
+  const isDecimal = match[1].includes('.');
+  const duration = 800;
+  const start = performance.now();
+
+  function step(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    // Ease out cubic
+    const ease = 1 - Math.pow(1 - progress, 3);
+    let current = target * ease;
+    let display;
+    if (isDecimal) {
+      display = current.toFixed(1);
+    } else {
+      current = Math.round(current);
+      display = hasComma ? current.toLocaleString() : String(current);
+    }
+    el.textContent = display + suffix;
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  el.textContent = (isDecimal ? '0.0' : '0') + suffix;
+  requestAnimationFrame(step);
+}
+
+function toggleExpandPreview() {
+  const overlay = document.getElementById('expandOverlay');
+  const frame = document.getElementById('mockupFrame');
+  if (!overlay || !frame) return;
+
+  const isExpanded = overlay.classList.contains('show');
+  if (isExpanded) {
+    overlay.classList.remove('show');
+    frame.classList.remove('expanded');
+    // Move frame back to preview layout
+    const previewLayout = document.querySelector('.preview-layout');
+    if (previewLayout) previewLayout.appendChild(frame);
+  } else {
+    overlay.classList.add('show');
+    frame.classList.add('expanded');
+    overlay.appendChild(frame);
+  }
+}
+
+/* ============================================
+   STEP 4 — QUOTE
+   ============================================ */
+function renderQuote() {
+  const p = calcPrices();
+  const planKey = p.planKey;
+  const planName = PLANS[planKey].name;
+  const bizName = state.bizName || 'Tu Negocio';
+  const bizCity = state.bizCity || 'México';
+  const hasWaExtras = WA_EXTRAS.some(ex => state.waExtras[ex.id] && !ex.included);
+  const hasWaAuto = state.waExtras['wa-chatbot'] || state.waExtras['wa-api'];
+
+  const rangeHigh = Math.round(p.total * 1.25);
+  const delivery = DELIVERY[planKey];
+
+  const selWeb = WEB_EXTRAS.filter(ex => state.webExtras[ex.id]);
+  const selWa = WA_EXTRAS.filter(ex => state.waExtras[ex.id] && !ex.included);
+
+  let waMsg = `¡Hola Vexio! 👋 Me interesa una cotización:\n\n`;
+  waMsg += `🏢 Negocio: ${bizName}\n📍 Ciudad: ${bizCity}\n📋 Plan: ${planName} ($${p.base.toLocaleString()} MXN)\n`;
+  if (selWeb.length) {
+    waMsg += `\n🌐 Extras web:\n${selWeb.map(e => `  • ${e.name} (+$${e.price.toLocaleString()})`).join('\n')}\n`;
+  }
+  if (selWa.length) {
+    waMsg += `\n💬 WhatsApp & Automatización:\n${selWa.map(e => `  • ${e.name} (+$${e.price.toLocaleString()})`).join('\n')}\n`;
+  }
+  waMsg += `\n💰 Total estimado: $${p.total.toLocaleString()} - $${rangeHigh.toLocaleString()} MXN\n\n¿Podemos agendar una llamada?`;
+
+  const waUrl = `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(waMsg)}`;
+
+  let html = `<div class="quote-card">
+    <div class="quote-biz">${bizName}</div>
+    <div class="quote-city">📍 ${bizCity}</div>
+    <div class="quote-plan-name">${planName}</div>
+
+    <div class="quote-detail-grid">
+      <div class="quote-detail-box">
+        <h4>🌐 Sitio web</h4>
+        <ul>
+          <li>${planName} — $${p.base.toLocaleString()}</li>
+          ${selWeb.map(e => `<li>${e.name} — +$${e.price.toLocaleString()}</li>`).join('')}
+          ${selWeb.length === 0 ? '<li style="color:var(--text-dim)">Sin extras</li>' : ''}
+        </ul>
+      </div>
+      <div class="quote-detail-box wa-box">
+        <h4>💬 WhatsApp & IA</h4>
+        <ul>
+          <li>Botón flotante — Incluido</li>
+          ${selWa.map(e => `<li>${e.name} — +$${e.price.toLocaleString()}</li>`).join('')}
+          ${selWa.length === 0 ? '<li style="color:var(--text-dim)">Sin extras</li>' : ''}
+        </ul>
+      </div>
+    </div>
+
+    <div class="quote-range">$${p.total.toLocaleString()} — $${rangeHigh.toLocaleString()} MXN</div>
+    <div class="quote-delivery">⏱️ Tiempo estimado: ${delivery}</div>
+    ${hasWaAuto ? '<div class="quote-wa-note">⚡ Implementación de automatizaciones: 3-5 días adicionales</div>' : ''}
+
+    <div class="cta-group">
+      <a class="cta-btn primary" href="${waUrl}" target="_blank" rel="noopener">💬 Hablar con un asesor</a>
+      <button class="cta-btn secondary" onclick="showEmailForm()">📧 Recibir cotización por email</button>
+      ${hasWaExtras ? '<button class="cta-btn wa-btn" onclick="openChatModal()">🤖 Ver demo del chatbot en vivo</button>' : ''}
+    </div>
+
+    <div class="email-form" id="emailForm">
+      <input type="email" id="emailInput" placeholder="tu@email.com">
+      <button onclick="sendEmail()">Enviar</button>
+    </div>
+    <div class="email-confirm" id="emailConfirm">
+      ✅ ¡Listo! Recibirás tu cotización detallada en menos de 24 horas. Revisa tu bandeja de entrada (y spam, por si acaso).
+    </div>
+  </div>`;
+
+  document.getElementById('quoteCard').innerHTML = html;
+}
+
+function showEmailForm() {
+  document.getElementById('emailForm').classList.toggle('show');
+}
+
+function sendEmail() {
+  const email = document.getElementById('emailInput').value.trim();
+  if (!email || !email.includes('@')) return;
+  document.getElementById('emailForm').classList.remove('show');
+  document.getElementById('emailConfirm').classList.add('show');
+}
+
+/* ============================================
+   CHATBOT MODAL
+   ============================================ */
+let chatHistory = [];
+let chatResponses = {};
+
+function openChatModal() {
+  const bizName = state.bizName || 'Tu Negocio';
+  document.getElementById('modalBizName').textContent = bizName + ' · Asistente IA';
+
+  const indKey = state.industry || 'restaurante';
+  const msgs = CHAT_DEMOS[indKey] || CHAT_DEMOS.restaurante;
+
+  chatResponses = {};
+  for (let i = 0; i < msgs.length - 1; i++) {
+    if (msgs[i].r === 'user' && msgs[i + 1].r === 'bot') {
+      const keywords = msgs[i].t.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+      chatResponses[keywords.join('|')] = msgs[i + 1].t;
+    }
+  }
+
+  chatHistory = [];
+  const modalMsgs = document.getElementById('modalMessages');
+  const greetings = {
+    restaurante: `¡Hola! 😊 Bienvenido a ${bizName}. ¿En qué puedo ayudarte? Puedo ayudarte con reservaciones, nuestro menú o cualquier duda.`,
+    taqueria: `¡Qué onda! 🌮 Bienvenido a ${bizName}. ¿Quieres hacer un pedido o tienes alguna pregunta?`,
+    estetica: `¡Hola! ✂️ Bienvenida a ${bizName}. ¿Te gustaría agendar una cita o conocer nuestros servicios?`,
+    hotel: `¡Bienvenido! 🏨 Soy el asistente de ${bizName}. ¿Te ayudo con disponibilidad o reservaciones?`,
+    clinica: `¡Buen día! 🏥 Bienvenido a ${bizName}. ¿Necesitas agendar una cita o tienes alguna consulta?`,
+    boutique: `¡Hola! 👗 Bienvenida a ${bizName}. ¿Buscas algo en especial o necesitas info sobre envíos?`,
+    taller: `¡Hola! 🚗 Bienvenido a ${bizName}. ¿Necesitas un servicio o quieres cotizar algo?`,
+    despacho: `¡Buen día! ⚖️ Bienvenido a ${bizName}. ¿En qué tema legal puedo orientarte?`
+  };
+
+  modalMsgs.innerHTML = `<div class="modal-msg bot">${greetings[indKey] || greetings.restaurante}</div>`;
+  document.getElementById('chatModal').classList.add('show');
+  document.getElementById('modalInput').focus();
+}
+
+function closeChatModal() {
+  document.getElementById('chatModal').classList.remove('show');
+}
+
+function sendModalMsg() {
+  const input = document.getElementById('modalInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  const modalMsgs = document.getElementById('modalMessages');
+  modalMsgs.innerHTML += `<div class="modal-msg user">${escapeHtml(text)}</div>`;
+
+  const typingId = 'typing-' + Date.now();
+  modalMsgs.innerHTML += `<div class="modal-msg typing" id="${typingId}"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  modalMsgs.scrollTop = modalMsgs.scrollHeight;
+
+  setTimeout(() => {
+    const typingEl = document.getElementById(typingId);
+    if (typingEl) typingEl.remove();
+
+    const response = findBotResponse(text);
+    modalMsgs.innerHTML += `<div class="modal-msg bot">${response}</div>`;
+    modalMsgs.scrollTop = modalMsgs.scrollHeight;
+  }, 800 + Math.random() * 700);
+}
+
+function findBotResponse(input) {
+  const low = input.toLowerCase();
+  const indKey = state.industry || 'restaurante';
+  const msgs = CHAT_DEMOS[indKey] || CHAT_DEMOS.restaurante;
+  const bizName = state.bizName || 'Tu Negocio';
+
+  for (let i = 0; i < msgs.length - 1; i++) {
+    if (msgs[i].r === 'user') {
+      const keywords = msgs[i].t.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+      const matchCount = keywords.filter(k => low.includes(k)).length;
+      if (matchCount >= 2 || (keywords.length <= 2 && matchCount >= 1)) {
+        return msgs[i + 1].t;
+      }
+    }
+  }
+
+  if (low.includes('precio') || low.includes('costo') || low.includes('cuánto')) {
+    return `Con gusto te doy información de precios. ¿Podrías decirme exactamente qué servicio te interesa? Así te doy el precio exacto 😊`;
+  }
+  if (low.includes('horario') || low.includes('hora') || low.includes('abierto')) {
+    return `Nuestro horario es de lunes a sábado, 9:00 AM a 7:00 PM. ¿Te gustaría agendar algo?`;
+  }
+  if (low.includes('ubicación') || low.includes('dirección') || low.includes('donde') || low.includes('dónde')) {
+    return `Estamos en ${state.bizCity || 'tu ciudad'}. Te puedo compartir la ubicación exacta por Google Maps. ¿Quieres que te la envíe? 📍`;
+  }
+  if (low.includes('gracias') || low.includes('thank')) {
+    return `¡Con mucho gusto! 😊 Si necesitas algo más, aquí estoy. ¡Que tengas excelente día!`;
+  }
+  if (low.includes('hola') || low.includes('buenas') || low.includes('hi')) {
+    return `¡Hola! 👋 ¿En qué puedo ayudarte hoy?`;
+  }
+
+  return `¡Gracias por tu mensaje! Un momento, estoy buscando la mejor respuesta para ti. ¿Hay algo más específico en lo que pueda ayudarte? 😊`;
+}
+
+function escapeHtml(text) {
+  const d = document.createElement('div');
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+/* Close modal on overlay click */
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'chatModal') closeChatModal();
+});
+</script>
+</body>
+</html>
