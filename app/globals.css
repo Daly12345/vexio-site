@@ -749,14 +749,21 @@ html.lenis, html.lenis body {
   background: linear-gradient(to bottom right, #ffffff, #f8fafc, #f1f5f9) !important;
 }
 
-/* Code snippet in hero */
-[data-theme="light"] .font-mono {
+/* Code snippet in hero — scoped to the snippet container only */
+[data-theme="light"] .bg-gray-900\/90.font-mono,
+[data-theme="light"] .bg-gray-900\/95.font-mono {
   background-color: #1e293b !important;
   color: #e2e8f0 !important;
 }
 
-[data-theme="light"] .font-mono .text-white {
+[data-theme="light"] .bg-gray-900\/90.font-mono .text-white,
+[data-theme="light"] .bg-gray-900\/95.font-mono .text-white {
   color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .bg-gray-900\/90.font-mono .text-cyan-400,
+[data-theme="light"] .bg-gray-900\/95.font-mono .text-cyan-400 {
+  color: #22d3ee !important;
 }
 
 /* Scrollbar light mode */
