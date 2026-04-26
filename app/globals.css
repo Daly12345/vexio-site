@@ -107,6 +107,27 @@
   will-change: opacity, transform;
 }
 
+/* Marquee animation for portfolio page */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 50s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
+
 /* Slow bounce animation for scroll indicator */
 @keyframes bounce-slow {
   0%, 100% {

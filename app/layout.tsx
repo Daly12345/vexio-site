@@ -19,12 +19,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vexio - Soluciones Digitales en México",
-  description: "Páginas web profesionales que convierten visitantes en clientes. Desarrollo web, e-commerce, SEO y mantenimiento web en México.",
-  keywords: ["desarrollo web", "páginas web", "e-commerce", "SEO", "México", "Vexio"],
+  title: "Vexio — Páginas web por $3,000 MXN, entrega en 48 horas",
+  description: "Estudio digital en México. Página web + Google My Business + WhatsApp por $3,000 MXN, una sola vez. Entrega en 48 horas. Sin mensualidades.",
+  keywords: ["página web México", "página web $3000", "diseño web Puerto Vallarta", "Google My Business", "WhatsApp Business", "Vexio"],
   openGraph: {
-    title: "Vexio - Soluciones Digitales",
-    description: "Soluciones digitales para hacer crecer tu negocio",
+    title: "Vexio — Páginas web por $3,000 MXN, entrega en 48 horas",
+    description: "Página web + Google My Business + WhatsApp en un solo paquete. Pago único, sin mensualidades.",
     url: "https://vexio.mx",
     siteName: "Vexio",
     locale: "es_MX",

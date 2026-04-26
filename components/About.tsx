@@ -7,7 +7,7 @@ import ScrollReveal from "./animations/ScrollReveal";
 const skills = [
   { name: "React / Next.js", level: 95 },
   { name: "Diseño UI/UX", level: 90 },
-  { name: "E-commerce", level: 85 },
+  { name: "Google My Business", level: 90 },
   { name: "SEO", level: 88 },
 ];
 

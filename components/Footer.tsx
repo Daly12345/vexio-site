@@ -20,8 +20,7 @@ export default function Footer() {
               Vexio
             </Link>
             <p className="text-gray-400 mb-4 max-w-md">
-              Soluciones digitales profesionales para hacer crecer tu negocio en México.
-              Desarrollo web, e-commerce y SEO.
+              Estudio digital para negocios mexicanos. Página web + Google My Business + WhatsApp por <span className="text-cyan-400 font-semibold">$3,000 MXN</span> una sola vez. Entrega en 48 horas.
             </p>
             <div className="flex space-x-4">
               <a
@@ -43,17 +42,22 @@ export default function Footer() {
             <h3 className="text-white font-semibold mb-4">Enlaces Rápidos</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="#servicios" className="text-gray-400 hover:text-cyan-400 transition">
+                <Link href="/#servicios" className="text-gray-400 hover:text-cyan-400 transition">
                   Servicios
                 </Link>
               </li>
               <li>
-                <Link href="#precios" className="text-gray-400 hover:text-cyan-400 transition">
+                <Link href="/portfolio" className="text-gray-400 hover:text-cyan-400 transition">
+                  Portafolio
+                </Link>
+              </li>
+              <li>
+                <Link href="/#precios" className="text-gray-400 hover:text-cyan-400 transition">
                   Precios
                 </Link>
               </li>
               <li>
-                <Link href="#contacto" className="text-gray-400 hover:text-cyan-400 transition">
+                <Link href="/#contacto" className="text-gray-400 hover:text-cyan-400 transition">
                   Contacto
                 </Link>
               </li>

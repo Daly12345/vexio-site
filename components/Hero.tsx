@@ -281,22 +281,22 @@ export default function Hero() {
               variants={itemVariants}
               className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1]"
             >
-              <span className="text-white block mb-2">Creamos sitios</span>
-              <span className="text-white block mb-2">web que</span>
+              <span className="text-white block mb-2">Páginas web</span>
+              <span className="text-white block mb-2">que</span>
               <motion.span
                 className="relative inline-block"
               >
                 {isHighPerformance ? (
                   <motion.span
-                    className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-300%"
+                    className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 bg-300%"
                     animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
                     transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                   >
-                    impresionan
+                    venden
                   </motion.span>
                 ) : (
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500">
-                    impresionan
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400">
+                    venden
                   </span>
                 )}
                 {/* Underline decoration */}
@@ -333,7 +333,7 @@ export default function Hero() {
               variants={itemVariants}
               className="text-lg sm:text-xl text-gray-300 max-w-xl mx-auto lg:mx-0 leading-relaxed"
             >
-              Diseño profesional, desarrollo rápido y resultados que convierten visitantes en clientes.
+              Sitio + Google My Business + WhatsApp por <span className="text-white font-semibold">$3,000 MXN</span> una sola vez. Entrega en 48 horas.
             </motion.p>
 
             {/* CTA Buttons */}
@@ -412,9 +412,9 @@ export default function Hero() {
               className="flex flex-wrap items-center justify-center lg:justify-start gap-6 pt-4"
             >
               {[
-                { number: "100+", label: "Proyectos" },
-                { number: "3-5", label: "Días entrega" },
-                { number: "24/7", label: "Soporte" },
+                { number: "$3,000", label: "MXN una sola vez" },
+                { number: "48hrs", label: "Entrega" },
+                { number: "0", label: "Mensualidades" },
               ].map((stat, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <span className="text-2xl font-bold text-cyan-400">{stat.number}</span>

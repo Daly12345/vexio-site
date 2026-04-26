@@ -20,6 +20,7 @@ export default function Navbar() {
 
   const navItems = [
     { href: "/#servicios", label: "Servicios" },
+    { href: "/portfolio", label: "Portafolio" },
     { href: "/#precios", label: "Precios" },
     { href: "/#proceso", label: "Proceso" },
     { href: "/#faq", label: "FAQ" },

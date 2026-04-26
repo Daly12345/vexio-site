@@ -7,44 +7,44 @@ import StaggerContainer, { StaggerItem } from "./animations/StaggerContainer";
 
 const faqs = [
   {
-    question: "¿Cuánto tiempo tarda en estar lista mi página web?",
+    question: "¿Es un solo pago o tiene mensualidad?",
     answer:
-      "El tiempo de entrega depende del plan que elijas. Una landing page básica puede estar lista en 3-5 días, mientras que un sitio más completo puede tomar de 10 a 25 días. Te daremos un tiempo estimado específico después de conocer los detalles de tu proyecto.",
+      "Es un solo pago de $3,000 MXN, una sola vez. No hay mensualidades, ni cuotas escondidas, ni renovaciones obligatorias. La página queda tuya. Después del primer año, sólo pagas la renovación de hosting y dominio (~$1,500–$2,000 MXN anuales) si quieres seguir con nosotros.",
   },
   {
-    question: "¿Qué necesito para empezar mi proyecto?",
+    question: "¿Cuánto tarda en estar lista mi página?",
     answer:
-      "Para comenzar necesitamos: tu logo (si lo tienes), textos o información sobre tu negocio, fotos de tus productos/servicios (o podemos usar imágenes de stock), y tus ideas sobre colores o estilo que te gusten. Si no tienes todo esto, no te preocupes, te ayudamos en el proceso.",
-  },
-  {
-    question: "¿El hosting y dominio están incluidos?",
-    answer:
-      "Todos nuestros planes incluyen hosting y dominio por 1 año. Después del primer año, la renovación tiene un costo aproximado de $1,500 - $2,000 MXN anuales dependiendo del dominio que elijas.",
-  },
-  {
-    question: "¿Puedo hacer cambios después de que esté lista?",
-    answer:
-      "Cada plan incluye un número de revisiones durante el desarrollo. Una vez entregado el proyecto, cambios menores tienen costo adicional. También ofrecemos planes de mantenimiento mensual que incluyen actualizaciones y modificaciones.",
+      "48 horas desde que recibimos el anticipo y tu material (logo, fotos, textos). Si nos das todo el mismo día, esa misma semana tu negocio está en línea con sitio profesional, Google My Business optimizado y WhatsApp conectado.",
   },
   {
     question: "¿Cómo es el proceso de pago?",
     answer:
-      "Trabajamos con un esquema de 50% de anticipo para iniciar el proyecto y 50% al momento de la entrega. Aceptamos transferencia bancaria, PayPal y pagos en efectivo en ubicaciones acordadas.",
+      "$1,000 MXN de anticipo para arrancar el proyecto y $2,000 MXN al entregar el sitio en línea. Aceptamos transferencia bancaria y depósito. Sin meses sin intereses, sin cuotas escondidas.",
   },
   {
-    question: "¿Mi página será responsiva (adaptable a móviles)?",
+    question: "¿Qué incluye exactamente el paquete?",
     answer:
-      "Todas nuestras páginas son 100% responsivas. Se verán perfectas en computadoras, tablets y celulares. Esto es fundamental hoy en día ya que más del 60% del tráfico web viene de dispositivos móviles.",
+      "Página web profesional (responsive, rápida, SEO local), optimización de Google My Business (fotos, descripción, categorías, horarios), botón flotante de WhatsApp, hosting + dominio incluidos el primer año, galería con servicios y precios estructurados, y soporte de 2 semanas para ajustes después de la entrega.",
   },
   {
-    question: "¿Incluyen SEO en las páginas web?",
+    question: "¿Qué necesito para empezar?",
     answer:
-      "Todos los planes incluyen SEO básico (títulos, descripciones, estructura correcta). Los planes Profesional y superiores incluyen SEO más avanzado con optimización de velocidad, Google My Business y estrategia de palabras clave.",
+      "Tu logo (si lo tienes), un poco de información de tu negocio, fotos de tu local/productos/servicios (o usamos stock si no las tienes), y una referencia rápida de estilo. Si te falta algo, te ayudamos en el proceso. Lo recopilamos por WhatsApp en 5 minutos.",
   },
   {
-    question: "¿Qué pasa si no me gusta el diseño?",
+    question: "¿La página queda mía?",
     answer:
-      "Antes de desarrollar, te mostramos una propuesta de diseño para tu aprobación. Si no te convence, hacemos los ajustes necesarios. Nuestro objetivo es que quedes 100% satisfecho con el resultado final.",
+      "Sí, completamente tuya. Te entregamos accesos al hosting, al dominio y a Google My Business. Si después decides moverla a otro proveedor, puedes hacerlo sin problema. No hay candados ni dependencia de nosotros.",
+  },
+  {
+    question: "¿Puedo hacer cambios después de la entrega?",
+    answer:
+      "Sí. Las primeras 2 semanas el soporte está incluido sin costo: ajustes de texto, fotos, horarios, lo que necesites. Después de las 2 semanas, los cambios menores tienen un costo simbólico por hora. Te avisamos antes, sin sorpresas.",
+  },
+  {
+    question: "¿Para qué tipo de negocios funciona?",
+    answer:
+      "Barberías, restaurantes, salones de belleza, consultorios, tours, hoteles boutique, talleres, clínicas, inmobiliarias y cualquier negocio local que necesite una página profesional con presencia en Google. Atendemos toda la República Mexicana de forma 100% remota, por WhatsApp y videollamada.",
   },
 ];
 

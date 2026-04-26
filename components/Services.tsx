@@ -14,68 +14,68 @@ export default function Services() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
         </svg>
       ),
-      title: "Paginas Web",
+      title: "Página Web Profesional",
       description:
-        "Sitios web profesionales, modernos y responsivos adaptados a cualquier dispositivo. Desde landing pages hasta sitios corporativos completos.",
+        "Sitio rápido, responsive y optimizado para SEO local. Listo en 48 horas, con galería, servicios y precios estructurados para tu negocio.",
       features: [
-        "Diseno responsivo",
-        "Optimizacion de velocidad",
+        "Diseño responsive",
+        "Optimización de velocidad",
         "SSL incluido",
-        "Hosting y dominio",
+        "Entrega en 48 horas",
       ],
       gradient: "from-cyan-500 to-blue-500",
     },
     {
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
       ),
-      title: "E-commerce",
+      title: "Google My Business",
       description:
-        "Tiendas en linea completas con pasarelas de pago integradas. Vende tus productos 24/7 con un sistema profesional y seguro.",
+        "Configuramos y optimizamos tu ficha en Google para que aparezcas cuando tus clientes buscan en la zona. Fotos, descripción, horarios y categorías afinadas.",
       features: [
-        "Catalogo de productos",
-        "Pasarela de pagos",
-        "Sistema de inventario",
-        "Dashboard de ventas",
+        "Ficha optimizada",
+        "Fotos profesionales",
+        "Categorías y horarios",
+        "Más visibilidad local",
       ],
-      gradient: "from-blue-500 to-purple-500",
+      gradient: "from-cyan-500 to-blue-500",
     },
     {
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
         </svg>
       ),
-      title: "SEO y Posicionamiento",
+      title: "Conexión a WhatsApp",
       description:
-        "Optimizacion para motores de busqueda que aumenta tu visibilidad en Google y atrae mas clientes potenciales a tu negocio.",
+        "Botón flotante de WhatsApp en cada página, vinculado directo a tu chat. Tus clientes te escriben en un click, sin formularios ni fricción.",
       features: [
-        "Analisis de keywords",
-        "Optimizacion on-page",
-        "Google My Business",
-        "Reportes mensuales",
+        "Botón flotante en todo el sitio",
+        "Mensaje pre-llenado",
+        "Cero fricción para el cliente",
+        "Conversiones inmediatas",
       ],
-      gradient: "from-purple-500 to-pink-500",
+      gradient: "from-cyan-500 to-blue-500",
     },
     {
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 12l-2 0m4-7l-1.4-1.4M5 19l-1.4 1.4M19 12l2 0m-4-7l1.4-1.4M19 19l1.4 1.4M12 5l0-2m0 16l0 2M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
       ),
-      title: "Mantenimiento Web",
+      title: "Hosting y Soporte",
       description:
-        "Mantenimiento continuo de tu sitio web. Actualizaciones, respaldos, seguridad y soporte tecnico para que tu web siempre funcione.",
+        "Hosting + dominio incluidos el primer año, sin cargos extra. Más 2 semanas de soporte después de la entrega para cualquier ajuste o cambio.",
       features: [
-        "Actualizaciones regulares",
-        "Respaldos automaticos",
-        "Monitoreo de seguridad",
-        "Soporte prioritario",
+        "Hosting + dominio 1 año",
+        "Soporte 2 semanas",
+        "Cambios incluidos",
+        "Sin mensualidades",
       ],
-      gradient: "from-pink-500 to-cyan-500",
+      gradient: "from-cyan-500 to-blue-500",
     },
   ];
 
@@ -94,13 +94,14 @@ export default function Services() {
               <span className="text-sm text-cyan-400 font-medium">Nuestros Servicios</span>
             </motion.div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
-              Soluciones digitales{" "}
+              Todo lo que tu{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                completas
-              </span>
+                negocio necesita
+              </span>{" "}
+              online
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Todo lo que necesitas para impulsar tu presencia en linea y hacer crecer tu negocio
+              Sitio + Google My Business + WhatsApp en un solo paquete. $3,000 MXN, una sola vez.
             </p>
           </div>
         </ScrollReveal>
@@ -174,7 +175,9 @@ export default function Services() {
         <ScrollReveal delay={0.4}>
           <div className="text-center mt-16">
             <motion.a
-              href="#contacto"
+              href="https://wa.me/5213222440437?text=Hola%2C%20quiero%20cotizar%20una%20p%C3%A1gina%20para%20mi%20negocio"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-8 py-4 rounded-full font-semibold overflow-hidden btn-shine"
               whileHover={{
                 scale: 1.05,
@@ -182,7 +185,7 @@ export default function Services() {
               }}
               whileTap={{ scale: 0.95 }}
             >
-              Solicita una cotizacion
+              Cotizar por WhatsApp
               <motion.svg
                 className="w-5 h-5"
                 fill="none"

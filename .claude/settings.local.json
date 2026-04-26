@@ -3,7 +3,16 @@
     "allow": [
       "Bash(npx tsc:*)",
       "Bash(npm install:*)",
-      "Bash(timeout 15 npm run dev:*)"
+      "Bash(timeout 15 npm run dev:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfix: Barras de skill estáticas en móvil\n\nSolo afecta las barras de porcentaje en \"Nuestras Especialidades\"\n- Móvil: barras estáticas \\(sin animación\\)\n- Desktop: mantiene animación con Framer Motion\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push)",
+      "Bash(git commit:*)",
+      "Bash(npm run build:*)",
+      "Bash(git revert:*)",
+      "Bash(npm run:*)",
+      "Bash(netstat:*)",
+      "Bash(npx next:*)"
     ]
   }
 }
