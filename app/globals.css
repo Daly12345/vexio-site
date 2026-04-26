@@ -645,6 +645,81 @@ html.lenis, html.lenis body {
   border-color: rgba(203, 213, 225, 0.6) !important;
 }
 
+/* ===== Portfolio page light-mode coverage ===== */
+
+/* Gradient cards: Qué incluye (60/60), Cómo trabajamos (80/80), Project cards (no opacity) */
+[data-theme="light"] [class*="from-gray-900/60"][class*="to-gray-950/60"] {
+  background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.97), rgba(241, 245, 249, 0.92)) !important;
+}
+
+[data-theme="light"] [class*="from-gray-900/80"][class*="to-gray-950/80"] {
+  background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.97), rgba(241, 245, 249, 0.92)) !important;
+}
+
+[data-theme="light"] .bg-gradient-to-br.from-gray-900.to-gray-950 {
+  background: linear-gradient(to bottom right, #ffffff, #f0f9ff) !important;
+}
+
+[data-theme="light"] [class*="from-gray-900"][class*="via-gray-950"][class*="to-black"] {
+  background: linear-gradient(to bottom right, #ffffff, #f8fafc, #f0f9ff) !important;
+}
+
+/* Marquee bg + dark accents */
+[data-theme="light"] .bg-gray-950\/50 {
+  background-color: rgba(248, 250, 252, 0.85) !important;
+}
+
+[data-theme="light"] .bg-gray-900\/95 {
+  background-color: rgba(248, 250, 252, 0.95) !important;
+}
+
+[data-theme="light"] .border-gray-800\/80 {
+  border-color: rgba(226, 232, 240, 0.85) !important;
+}
+
+[data-theme="light"] .border-gray-800\/50 {
+  border-color: rgba(226, 232, 240, 0.65) !important;
+}
+
+/* Cyan text — darker shade for readability on white backgrounds */
+[data-theme="light"] .text-cyan-400 {
+  color: #0891b2 !important;
+}
+
+[data-theme="light"] .text-cyan-500 {
+  color: #0e7490 !important;
+}
+
+/* Cyan accent variants */
+[data-theme="light"] .text-cyan-500\/60 {
+  color: rgba(14, 116, 144, 0.6) !important;
+}
+
+/* Cards with cyan tinted bg need darker cyan inside for contrast */
+[data-theme="light"] .bg-cyan-500\/10 .text-cyan-400,
+[data-theme="light"] .border-cyan-500\/20 .text-cyan-400 {
+  color: #0e7490 !important;
+}
+
+/* Browser chrome URL text in project cards */
+[data-theme="light"] .bg-gray-800\/80 {
+  background-color: rgba(226, 232, 240, 0.6) !important;
+}
+
+/* Marquee edge fades: from-black to-transparent should fade from page bg */
+[data-theme="light"] .bg-gradient-to-r.from-black.to-transparent {
+  background: linear-gradient(to right, rgba(248, 250, 252, 1), transparent) !important;
+}
+
+[data-theme="light"] .bg-gradient-to-l.from-black.to-transparent {
+  background: linear-gradient(to left, rgba(248, 250, 252, 1), transparent) !important;
+}
+
+/* Footer bottom border in portfolio page */
+[data-theme="light"] footer .border-gray-800\/80 {
+  border-color: rgba(226, 232, 240, 0.85) !important;
+}
+
 /* Shadows for light mode */
 [data-theme="light"] .shadow-lg,
 [data-theme="light"] .shadow-xl,
