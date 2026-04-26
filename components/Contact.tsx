@@ -56,7 +56,7 @@ export default function Contact() {
                 {/* Price */}
                 <div className="mb-6">
                   <div className="flex items-baseline gap-2 flex-wrap">
-                    <span className="text-6xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-white via-cyan-200 to-cyan-400 leading-none tracking-tight">
+                    <span className="price-gradient-text text-6xl md:text-7xl font-bold leading-none tracking-tight">
                       $3,000
                     </span>
                     <span className="text-lg text-gray-400 font-medium">MXN</span>

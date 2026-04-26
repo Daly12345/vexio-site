@@ -498,7 +498,7 @@ export default function PortfolioClient() {
                   <div className="mb-1">
                     <div className="flex items-start gap-2">
                       <span className="text-2xl text-gray-400 font-bold mt-3">$</span>
-                      <span className="text-[5.5rem] md:text-[7rem] font-bold text-transparent bg-clip-text bg-gradient-to-br from-white via-cyan-200 to-cyan-400 leading-none tracking-tighter">
+                      <span className="price-gradient-text text-[5.5rem] md:text-[7rem] font-bold leading-none tracking-tighter">
                         3,000
                       </span>
                     </div>
@@ -749,7 +749,7 @@ export default function PortfolioClient() {
 
             {/* Massive price */}
             <div className="mb-2">
-              <span className="text-[4.5rem] sm:text-[7rem] lg:text-[9rem] font-bold text-transparent bg-clip-text bg-gradient-to-br from-white via-cyan-200 to-cyan-500 leading-none tracking-tighter">
+              <span className="price-gradient-text text-[4.5rem] sm:text-[7rem] lg:text-[9rem] font-bold leading-none tracking-tighter">
                 $3,000
               </span>
             </div>
